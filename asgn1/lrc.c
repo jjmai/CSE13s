@@ -28,6 +28,10 @@ int main() {
   srand(seed);
   printf("How many players? ");
   scanf("%d", &players); // ask user input for #players
+  if (players < 2 || players > 10) {
+    printf("Cannot enter player number less than 2 or above 10\n");
+    exit(t);
+  }
 
   while (dead <    // while more than 1 player with
          players - // more than 0 dollars, continue
