@@ -8,7 +8,8 @@ lrc	:	lrc.o
 lrc.o	:	lrc.c
 	$(CC) -c lrc.c
 clean	:
-	rm -f lrc lrc.o
-infer	:
-	make clean; infer-capture -- make; infer-analyze -- make
+	rm -rf lrc lrc.o infer-out
+infer	: clean
+	infer-capture -- make
+	infer-analyze -- make
 
