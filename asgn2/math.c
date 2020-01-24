@@ -16,48 +16,49 @@ double Factorial();
 double Power();
 const double PI = 3.141592653589793238462643383279502884197;
 
+// this function will take in a flag and print out answers
 int main(int argc, char **argv) {
   int opt = 0;
-  while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
-    if (argc > 2) {
+  while ((opt = getopt(argc, argv, OPTIONS)) != -1) { // continue while
+    if (argc > 2) {                                   // only 1 argument exists
       printf("ERROR\n");
-      break;
+      return -1;
     }
     double z = 0;
     double approx, answer, diff = 0;
-    switch (opt) {
-    case 's':
+    switch (opt) { // created switch/case for argv
+    case 's':      // sin(x)
       printf("%s %15s %19s %18s\n", "x", "Sin", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
       for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
-        answer = sin(z);
-        approx = Sin(z);
-        diff = approx - answer;
+        answer = sin(z);        // Library answer
+        approx = Sin(z);        // my approx sin function
+        diff = approx - answer; // differnece
         printf("%8.5f %15.8f %15.8f %15.8f\n", z, approx, answer, diff);
       }
       break;
-    case 'c':
+    case 'c': // for cos(x)
       printf("%s %15s %19s %18s\n", "x", "Cos", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
       for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
-        answer = cos(z);
-        approx = Cos(z);
+        answer = cos(z); // Library answer
+        approx = Cos(z); // my function
         diff = approx - answer;
         printf("%8.5f %15.8f %15.8f %15.8f\n", z, approx, answer, diff);
       }
       break;
-    case 't':
+    case 't': // for tan(x)
       printf("%s %15s %19s %18s\n", "x", "Tan", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
       for (z = -(PI / 2 - 0.001); z <= (PI / 2 - 0.001) + 0.1;
            z += PI / 16.00) {
-        answer = tan(z);
+        answer = tan(z); // sin(x)/Cos(x)
         approx = Tan(z);
         diff = approx - answer;
         printf("%8.5f %15.8f %15.8f %15.8f\n", z, approx, answer, diff);
       }
       break;
-    case 'e':
+    case 'e': // exp function
       printf("%s %15s %19s %18s\n", "x", "Exp", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
       for (z = 0; z <= 10; z += 0.1) {
@@ -67,7 +68,7 @@ int main(int argc, char **argv) {
         printf("%8.5f %15.8f %15.8f %15.8f\n", z, approx, answer, diff);
       }
       break;
-    case 'a':
+    case 'a': // print all
       printf("%s %15s %19s %18s\n", "x", "Sin", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
       for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
@@ -103,9 +104,9 @@ int main(int argc, char **argv) {
       }
       break;
 
-    case '?':
+    case '?': // break if no -e -s -c -t -a
       printf("ERROR\n");
-      break;
+      return -1;
     }
   }
 
@@ -116,12 +117,12 @@ double Sin(double x) {
   int i = 0;
   double sign, p, f = 0;
   double approx = 0;
-  if (x > PI) {
+  if (x > PI) { // if radian > PI then -2*PI (same value)
     x = x - 2 * PI;
-  } else if (x < -PI) {
+  } else if (x < -PI) { // if radian < -PI then +2*PI
     x = x + 2 * PI;
   }
-  for (i = 0; i <= 10; i++) {
+  for (i = 0; i <= 10; i++) { //
     sign = pow(-1.0, i);
     p = Power(x, 2.0 * i + 1.0);
     f = Factorial(2.0 * i + 1.0);
@@ -130,7 +131,7 @@ double Sin(double x) {
   return approx;
 }
 
-double Cos(double x) {
+double Cos(double x) { // same as Sin(x)
 
   int i = 0;
   double sign, p, f = 0;
@@ -148,8 +149,8 @@ double Cos(double x) {
   }
   return approx;
 }
-double Tan(double x) {
-  double s, c = 0;
+double Tan(double x) { // go into Sin(x) and Cos(x) function
+  double s, c = 0;     // divide Sin(x) by Cos(x)
   double approx = 0;
   s = Sin(x);
   c = Cos(x);
@@ -161,12 +162,12 @@ double Exp(double x) {
   double i = 1.0;
   double term = 1.0;
   double sum = term;
-  if (x < 0.0) {
+  if (x < 0.0) { // if x is negative get reciprocal
     check = true;
     x *= -1.0;
   }
-  while (term > EPSILON) {
-    term = Power(x, i) / Factorial(i);
+  while (term > EPSILON) {             // this while loop keeps on adding taylor
+    term = Power(x, i) / Factorial(i); // until very small
     i += 1.0;
     sum += term;
   }
@@ -176,7 +177,7 @@ double Exp(double x) {
   return sum;
 }
 
-double Factorial(double a) {
+double Factorial(double a) { // recurison factorial
   if (a == 0 || a == 1) {
     return 1;
   } else {
@@ -185,7 +186,7 @@ double Factorial(double a) {
   }
 }
 
-double Power(double a, double b) {
+double Power(double a, double b) { // Power function
   int i = 0;
   double result = a;
   if (b == 0) {
