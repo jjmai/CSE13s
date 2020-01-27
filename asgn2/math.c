@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-//USED PROFESSOR LONG's CODE
+// USED PROFESSOR LONG's CODE
 double Sin(double x) {
   double answer, answer2 = 0;
   if (x > M_PI) {
@@ -143,10 +143,10 @@ double Sin(double x) {
   return answer / answer2;
 }
 
-//USED PROFESSOR LONG's CODE
+// USED PROFESSOR LONG's CODE
 double Cos(double x) { // same as Sin(x)
   double answer, answer2 = 0;
-  x += M_PI / 2;
+  x += M_PI / 2; // add PI/2 as it equals to Sin(x) pade approx
   if (x > 3 * M_PI / 2) {
     x -= 2 * M_PI;
   }
