@@ -14,7 +14,6 @@ double Tan();
 double Exp();
 double Factorial();
 double Power();
-const double PI = 3.141592653589793238462643383279502884197;
 
 // this function will take in a flag and print out answers
 int main(int argc, char **argv) {
@@ -30,7 +29,7 @@ int main(int argc, char **argv) {
     case 's':      // sin(x)
       printf("%s %15s %19s %18s\n", "x", "Sin", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
-      for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
+      for (z = -2.0 * M_PI; z <= 2.0 * M_PI; z += M_PI / 16.0) {
         answer = sin(z);        // Library answer
         approx = Sin(z);        // my approx sin function
         diff = approx - answer; // differnece
@@ -40,7 +39,7 @@ int main(int argc, char **argv) {
     case 'c': // for cos(x)
       printf("%s %15s %19s %18s\n", "x", "Cos", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
-      for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
+      for (z = -2.0 * M_PI; z <= 2.0 * M_PI; z += M_PI / 16.0) {
         answer = cos(z); // Library answer
         approx = Cos(z); // my function
         diff = approx - answer;
@@ -50,8 +49,8 @@ int main(int argc, char **argv) {
     case 't': // for tan(x)
       printf("%s %15s %19s %18s\n", "x", "Tan", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
-      for (z = -(PI / 2 - 0.001); z <= (PI / 2 - 0.001) + 0.1;
-           z += PI / 16.00) {
+      for (z = -(M_PI / 2 - 0.001); z <= (M_PI / 2 - 0.001) + 0.1;
+           z += M_PI / 16.00) {
         answer = tan(z); // sin(x)/Cos(x)
         approx = Tan(z);
         diff = approx - answer;
@@ -71,7 +70,7 @@ int main(int argc, char **argv) {
     case 'a': // print all
       printf("%s %15s %19s %18s\n", "x", "Sin", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
-      for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
+      for (z = -2.0 * M_PI; z <= 2.0 * M_PI; z += M_PI / 16.0) {
         answer = sin(z);
         approx = Sin(z);
         diff = approx - answer;
@@ -79,7 +78,7 @@ int main(int argc, char **argv) {
       }
       printf("%s %15s %19s %18s\n", "x", "Cos", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
-      for (z = -2.0 * PI; z <= 2.0 * PI + 0.001; z += PI / 16.0) {
+      for (z = -2.0 * M_PI; z <= 2.0 * M_PI; z += M_PI / 16.0) {
         answer = cos(z);
         approx = Cos(z);
         diff = approx - answer;
@@ -87,8 +86,8 @@ int main(int argc, char **argv) {
       }
       printf("%s %15s %19s %18s\n", "x", "Tan", "Library", "Difference");
       printf("%s %15s %19s %18s\n", "-", "---", "-------", "----------");
-      for (z = -(PI / 2 - 0.001); z <= (PI / 2 - 0.001) + 0.1;
-           z += PI / 16.00) {
+      for (z = -(M_PI / 2 - 0.001); z <= (M_PI / 2 - 0.001) + 0.1;
+           z += M_PI / 16.00) {
         answer = tan(z);
         approx = Tan(z);
         diff = approx - answer;
@@ -113,50 +112,80 @@ int main(int argc, char **argv) {
   return 0;
 }
 
+//USED PROFESSOR LONG's CODE
 double Sin(double x) {
-  int i = 0;
-  double sign, p, f = 0;
-  double approx = 0;
-  if (x > PI) { // if radian > PI then -2*PI (same value)
-    x = x - 2 * PI;
-  } else if (x < -PI) { // if radian < -PI then +2*PI
-    x = x + 2 * PI;
+  double answer, answer2 = 0;
+  if (x > M_PI) {
+    x -= 2 * M_PI;
   }
-  for (i = 0; i <= 10; i++) { //
-    sign = pow(-1.0, i);
-    p = Power(x, 2.0 * i + 1.0);
-    f = Factorial(2.0 * i + 1.0);
-    approx += sign * p / f;
+  if (x < -M_PI) {
+    x += 2 * M_PI;
   }
-  return approx;
+  double square = x * x;
+  answer =
+      x * (312140082454773707300540774400.00 +
+           square * (-46874038261167705331462118400.00 +
+                     square * (1786120037873661209340741120.00 +
+                               square * (-25976870613633842126864640.00 +
+                                         square * (159210544441105257620520.00 -
+                                                   352265759709839993316.00 *
+                                                       square)))));
+  answer2 =
+      312140082454773707300540774400.00 +
+      square *
+          (5149308814627912551961344000.00 +
+           square *
+               (43170819855199073829792000.00 +
+                square * (239915282947229725355520.00 +
+                          square * (953460195521182909560.00 +
+                                    square * (2641606814451060456.00 +
+                                              4128322445936963 * square)))));
+  return answer / answer2;
 }
 
+//USED PROFESSOR LONG's CODE
 double Cos(double x) { // same as Sin(x)
+  double answer, answer2 = 0;
+  x += M_PI / 2;
+  if (x > 3 * M_PI / 2) {
+    x -= 2 * M_PI;
+  }
+  double square = x * x;
+  answer =
+      x * (312140082454773707300540774400.00 +
+           square * (-46874038261167705331462118400.00 +
+                     square * (1786120037873661209340741120.00 +
+                               square * (-25976870613633842126864640.00 +
+                                         square * (159210544441105257620520.00 -
+                                                   352265759709839993316.00 *
+                                                       square)))));
+  answer2 =
+      312140082454773707300540774400.00 +
+      square *
+          (5149308814627912551961344000.00 +
+           square *
+               (43170819855199073829792000.00 +
+                square * (239915282947229725355520.00 +
+                          square * (953460195521182909560.00 +
+                                    square * (2641606814451060456.00 +
+                                              4128322445936963 * square)))));
 
-  int i = 0;
-  double sign, p, f = 0;
-  double approx = 0;
-  if (x > PI) {
-    x = x - 2 * PI;
-  } else if (x < -PI) {
-    x = x + 2 * PI;
-  }
-  for (i = 0; i <= 10; i++) {
-    sign = pow(-1.0, i);
-    p = Power(x, 2.0 * i);
-    f = Factorial(2.0 * i);
-    approx += sign * p / f;
-  }
-  return approx;
+  return answer / answer2;
 }
-double Tan(double x) { // go into Sin(x) and Cos(x) function
-  double s, c = 0;     // divide Sin(x) by Cos(x)
-  double approx = 0;
-  s = Sin(x);
-  c = Cos(x);
-  approx = s / c;
-  return approx;
+
+double Tan(double x) {
+  double answer, answer2 = 0;
+  double square = x * x;
+  answer =
+      x * (square * (square * (square * (square - 990) + 135135) - 4729725) +
+           34459425);
+  answer2 =
+      45 *
+      (square * (square * (square * (square - 308) + 21021) - 360360) + 765765);
+
+  return answer / answer2;
 }
+
 double Exp(double x) {
   bool check = false;
   double i = 1.0;
