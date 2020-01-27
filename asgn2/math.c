@@ -12,8 +12,6 @@ double Sin();
 double Cos();
 double Tan();
 double Exp();
-double Factorial();
-double Power();
 
 // this function will take in a flag and print out answers
 int main(int argc, char **argv) {
@@ -185,44 +183,14 @@ double Tan(double x) {
 
   return answer / answer2;
 }
-
+// used PROFESSOR LONG's CODE
 double Exp(double x) {
-  bool check = false;
   double i = 1.0;
   double term = 1.0;
-  double sum = term;
-  if (x < 0.0) { // if x is negative get reciprocal
-    check = true;
-    x *= -1.0;
-  }
-  while (term > EPSILON) {             // this while loop keeps on adding taylor
-    term = Power(x, i) / Factorial(i); // until very small
-    i += 1.0;
+  double sum = 1.0;
+  for (i = 1; fabsl(term) > EPSILON; i++) {
+    term = x / i * term;
     sum += term;
   }
-  if (check == true) {
-    return 1.0 / sum;
-  }
   return sum;
-}
-
-double Factorial(double a) { // recurison factorial
-  if (a == 0 || a == 1) {
-    return 1;
-  } else {
-
-    return a * (Factorial(a - 1));
-  }
-}
-
-double Power(double a, double b) { // Power function
-  int i = 0;
-  double result = a;
-  if (b == 0) {
-    return 1;
-  }
-  for (i = 1; i < b; i++) {
-    result *= a;
-  }
-  return result;
 }
