@@ -12,3 +12,7 @@ Program should go through maze and print paths out.
 type Make to build
 Make clean to clean .o and infer-out
 make infer to check for errors
+
+#ERRORS
+infer-out: error of possible being NULL, but made sure it isn't possible
+Some input pushes the second node twice, but works for majority of inputs

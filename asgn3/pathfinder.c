@@ -23,20 +23,19 @@ char letter = 0;
 int main(int argc, char **argv) {
   Stack *s = stack_create();
   FILE *fp = stdin;
-  int visited[26];
+  int visited[26]; //2d array to mark down areas checked
   int grid[26][26];
-  int undirected[26][26];
   int opt;
   int answer = 0, answer2 = 0;
   int i, j, x = 0, y = 0;
   char c = 'A';
   char ch[256];
   bool check = false;
+  // CREATES a 2d ARRAY
   for (i = 0; i < WIDTH; i++) {
     visited[i] = 0;
     for (j = 0; j < HEIGHT; j++) {
       grid[i][j] = 0;
-      undirected[i][j] = 0;
     }
   }
   while ((opt = getopt(argc, argv, "i:udm")) != -1) {
@@ -50,31 +49,27 @@ int main(int argc, char **argv) {
       }
 
     case ('u'):
-      if (letter != 'i') {
-        letter = 'u';
-        while (fscanf(fp, "%s", ch) != EOF) {
-          answer = ch[0] - 'A';
-          answer2 = ch[1] - 'A';
-          if (answer > 30) {
-            answer -= 32;
-          }
-          if (answer2 > 30) {
-            answer2 -= 32;
-          }
-
-          if (check != true) {
-            x = answer;
-            y = answer2;
-            check = true;
-            visited[x] = 1;
-          }
-          grid[answer][answer2] = 1;
-          grid[answer2][answer] = 1;
-          // undirected[answer][answer2] = 1;
-          // undirected[answer2][answer] = 1;
+      letter = 'u';
+      while (fscanf(fp, "%s", ch) != EOF) {
+        //Take in input and convert to numbers
+        answer = ch[0] - 'A';
+        answer2 = ch[1] - 'A';
+        if (answer2 > 30) {
+          answer2 -= 32;
         }
-        break;
+
+        if (check != true) {
+          x = answer;
+          // y = answer2;
+          check = true;
+          visited[x] = 1;
+        }
+        grid[answer][answer2] = 1;
+        grid[answer2][answer] = 1;
+        
       }
+    
+      break;
     case ('d'):
       if (letter != 'u') {
         letter = 'd';
@@ -89,7 +84,6 @@ int main(int argc, char **argv) {
           }
           if (check != true) {
             x = answer;
-            y = answer2;
             check = true;
             visited[x] = 1;
           }
@@ -100,6 +94,7 @@ int main(int argc, char **argv) {
 
     case ('m'):
       Head();
+      //print output
       for (i = 0; i < 26; i++) {
         printf("%c ", c++);
         for (j = 0; j < 26; j++) {
@@ -118,6 +113,7 @@ int main(int argc, char **argv) {
   printf("Length of shortest path is: %d\n", temp);
 }
 
+//header
 void Head(void) {
   char c = 'A';
   int i = 0;
@@ -128,12 +124,14 @@ void Head(void) {
   printf("\n");
 }
 
+//recursion
 void Maze(Stack *s, int grid[26][26], int visited[26], int y) {
+  //goes in if end is reached
   if (y == 25) {
     stack_push(s, y);
     stack_print(s);
-    amount++;
-    if (s->top < temp) {
+    amount++;		//how many paths
+    if (s->top < temp) {		//shortest length
       temp = s->top;
     }
     return;
