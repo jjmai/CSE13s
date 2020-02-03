@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
   FILE *fp = stdin;
   int visited[26];
   int grid[26][26];
+  int undirected[26][26];
   int opt;
   int answer = 0, answer2 = 0;
   int i, j, x = 0, y = 0;
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
     visited[i] = 0;
     for (j = 0; j < HEIGHT; j++) {
       grid[i][j] = 0;
+      undirected[i][j] = 0;
     }
   }
   while ((opt = getopt(argc, argv, "i:udm")) != -1) {
@@ -46,33 +48,36 @@ int main(int argc, char **argv) {
       if (fp == NULL) {
         exit(1);
       }
-      break;
+
     case ('u'):
-      letter = 'u';
-      while (fscanf(fp, "%s", ch) != EOF) {
-        answer = ch[0] - 'A';
-        answer2 = ch[1] - 'A';
-        if (answer > 30) {
-          answer -= 32;
-        }
-        if (answer2 > 30) {
-          answer2 -= 32;
-        }
+      if (letter != 'i') {
+        letter = 'u';
+        while (fscanf(fp, "%s", ch) != EOF) {
+          answer = ch[0] - 'A';
+          answer2 = ch[1] - 'A';
+          if (answer > 30) {
+            answer -= 32;
+          }
+          if (answer2 > 30) {
+            answer2 -= 32;
+          }
 
-        if (check != true) {
-          x = answer;
-          y = answer2;
-          check = true;
- 	  visited[x]=1;
+          if (check != true) {
+            x = answer;
+            y = answer2;
+            check = true;
+            visited[x] = 1;
+          }
+          grid[answer][answer2] = 1;
+          grid[answer2][answer] = 1;
+          // undirected[answer][answer2] = 1;
+          // undirected[answer2][answer] = 1;
         }
-        grid[answer][answer2] = 1;
-        grid[answer2][answer] = 1;
+        break;
       }
-      break;
-
     case ('d'):
       if (letter != 'u') {
-        letter = 'u';
+        letter = 'd';
         while (fscanf(fp, "%s", ch) != EOF) {
           answer = ch[0] - 'A';
           answer2 = ch[1] - 'A';
@@ -86,7 +91,7 @@ int main(int argc, char **argv) {
             x = answer;
             y = answer2;
             check = true;
-  	    visited[x]=1;
+            visited[x] = 1;
           }
           grid[answer][answer2] = 1;
         }
@@ -102,10 +107,13 @@ int main(int argc, char **argv) {
         }
         printf("\n");
       }
+      break;
+    default:
+      exit(1);
     }
   }
-  //stack_push(s, 0);
-  Maze(s, grid, visited,0);
+  // stack_push(s, 0);
+  Maze(s, grid, visited, 0);
   printf("Number of paths: %d\n", amount);
   printf("Length of shortest path is: %d\n", temp);
 }
