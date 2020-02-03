@@ -15,4 +15,4 @@ make infer to check for errors
 
 #ERRORS
 infer-out: error of possible being NULL, but made sure it isn't possible
-Some input pushes the second node twice, but works for majority of inputs
+For some inputs, the first node is always wrong, because code somehow pushed twice. But the rest of the nodes are good :(

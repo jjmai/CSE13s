@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
       exit(1);
     }
   }
-  // stack_push(s, 0);
+  stack_push(s, 0);
   Maze(s, grid, visited, 0);
   printf("Number of paths: %d\n", amount);
   printf("Length of shortest path is: %d\n", temp);
@@ -134,6 +134,7 @@ void Maze(Stack *s, int grid[26][26], int visited[26], int y) {
     if (s->top < temp) {		//shortest length
       temp = s->top;
     }
+    stack_pop(s,s->items);
     return;
   }
   visited[y] = 1;
