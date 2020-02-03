@@ -19,12 +19,13 @@ int temp = 100;
 int length = 0;
 int amount = 0;
 char letter = 0;
+int visited[26]; // 2d array to mark down areas checked
+int grid[26][26];
+
 
 int main(int argc, char **argv) {
   Stack *s = stack_create();
   FILE *fp = stdin;
-  int visited[26]; //2d array to mark down areas checked
-  int grid[26][26];
   int opt;
   int answer = 0, answer2 = 0;
   int i, j, x = 0, y = 0;
@@ -51,9 +52,13 @@ int main(int argc, char **argv) {
     case ('u'):
       letter = 'u';
       while (fscanf(fp, "%s", ch) != EOF) {
-        //Take in input and convert to numbers
+        // Take in input and convert to numbers
         answer = ch[0] - 'A';
         answer2 = ch[1] - 'A';
+        // change lowercase to upper
+        if (answer > 30) {
+          answer -= 32;
+        }
         if (answer2 > 30) {
           answer2 -= 32;
         }
@@ -66,9 +71,8 @@ int main(int argc, char **argv) {
         }
         grid[answer][answer2] = 1;
         grid[answer2][answer] = 1;
-        
       }
-    
+
       break;
     case ('d'):
       if (letter != 'u') {
@@ -94,7 +98,7 @@ int main(int argc, char **argv) {
 
     case ('m'):
       Head();
-      //print output
+      // print output
       for (i = 0; i < 26; i++) {
         printf("%c ", c++);
         for (j = 0; j < 26; j++) {
@@ -107,13 +111,13 @@ int main(int argc, char **argv) {
       exit(1);
     }
   }
-  stack_push(s, 0);
-  Maze(s, grid, visited, 0);
+  //stack_push(s, 0);
+  Maze(s,0);
   printf("Number of paths: %d\n", amount);
   printf("Length of shortest path is: %d\n", temp);
 }
 
-//header
+// header
 void Head(void) {
   char c = 'A';
   int i = 0;
@@ -124,17 +128,17 @@ void Head(void) {
   printf("\n");
 }
 
-//recursion
-void Maze(Stack *s, int grid[26][26], int visited[26], int y) {
-  //goes in if end is reached
+// recursion
+void Maze(Stack *s, int y) {
+  // goes in if end is reached
   if (y == 25) {
     stack_push(s, y);
     stack_print(s);
-    amount++;		//how many paths
-    if (s->top < temp) {		//shortest length
+    amount++;            // how many paths
+    if (s->top < temp) { // shortest length
       temp = s->top;
     }
-    stack_pop(s,s->items);
+    stack_pop(s, s->items);
     return;
   }
   visited[y] = 1;
@@ -142,7 +146,7 @@ void Maze(Stack *s, int grid[26][26], int visited[26], int y) {
     if (grid[y][i] == 1 && visited[i] != 1) {
       stack_push(s, y);
       visited[i] = 1;
-      Maze(s, grid, visited, i);
+      Maze(s, i);
       stack_pop(s, s->items);
       visited[i] = 0;
     }
