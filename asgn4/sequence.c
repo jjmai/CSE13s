@@ -12,22 +12,24 @@ int lucas();
 int lucas2();
 int mer();
 int mer2();
-int *convert();
+char *convert();
 
 int main(int argc, char *argv[]) {
   int opt, num;
+  bool head = true; // to print headers
   int letter = 0;
-  int *point;
+  char array[36]; // array pointer to base conversion
   while ((opt = getopt(argc, argv, "spn:")) != EOF) {
     switch (opt) {
+    // This case will direct to prime functions
     case 's':
       letter = 's';
       break;
-
+    // This case will direct to palindome functions
     case 'p':
       letter = 'p';
       break;
-
+    // This is max number to be printed
     case 'n':
       num = atoi(optarg);
       break;
@@ -38,17 +40,26 @@ int main(int argc, char *argv[]) {
   }
   BitVector *v = bv_create(num);
   sieve(v);
+  if (num < 0) {
+    exit(1);
+  }
+  if (num == '\0') {
+    num = 1000;
+  }
   if (letter == 's') {
     for (int j = 0; j <= num; j++) {
       if (bv_get_bit(v, j) == 1) {
         printf("%d: ", j);
         printf("prime");
+        // checks if mersenne prime exist
         if (mer(j) == true) {
           printf(", mersenne");
         }
+        // checks if luca prime exists
         if (lucas(j) == true) {
           printf(", lucas");
         }
+        // check fibonacci prime
         if (fib(j) == true) {
           printf(", fibonacci");
         }
@@ -56,15 +67,54 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  if (letter == 'p') {
+    int base = 2;
+    int count = 0;
+    char string[36];
+    // only tests 4 base conversion
+    while (count != 4) {
+      if (count == 1) {
+        base = 10;
+      } else if (count == 2) {
+        base = 14;
+      } else if (count == 3) {
+        base = 23;
+      }
+      for (int k = 0; k <= num; k++) {
+        if (bv_get_bit(v, k) == 1) {
+          if (head == true) {
+            printf("Base %d\n", base);
+            printf("---- --\n");
+            head = false;
+          }
+          convert(k, base, array);
+          if (isPalindrome(array) == true) {
+            printf("%d = ", k);
+            printf("%s", array);
+            printf("\n");
+          }
+        }
+      }
+      head = true;
+      count += 1;
+      printf("\n");
+    }
+  }
+  bv_delete(v); // free space
   return 0;
 }
-
+// PROF DL
 int isPalindrome(char prime[]) {
+  if (prime == NULL) {
+    return false;
+  }
   int left = 0;
   int right = -1;
+  // find length ofr array string
   for (int i = 0; prime[i] != '\0'; i++) {
     right += 1;
   }
+  // checks if left most if = right most and increments to the middle
   while (left <= right) {
     if (prime[left] != prime[right]) {
       return false;
@@ -78,10 +128,11 @@ int isPalindrome(char prime[]) {
 int fib(int n) {
   bool p = true;
   int check = 0;
-  for (int i = 0; i <= 20; i++) {
+  // goes into fib2 funciton to check return fib number
+  for (int i = 0; i <= 25; i++) {
     p = true;
     check = fib2(i);
-
+    // check prime
     for (int i = 2; i < check; i++) {
       if (check % i == 0 && check != 2) {
         p = false;
@@ -93,6 +144,7 @@ int fib(int n) {
   }
   return false;
 }
+// fibonacci function
 int fib2(int n) {
   int a = 0, b = 1, c;
   if (n <= 1) {
@@ -105,11 +157,11 @@ int fib2(int n) {
   }
   return b;
 }
-
+// checks lucas
 int lucas(int n) {
   bool p = true;
   int check = 0;
-  for (int i = 0; i <= 20; i++) {
+  for (int i = 0; i <= 25; i++) {
     p = true;
     check = lucas2(i);
     for (int i = 2; i < check; i++) {
@@ -123,7 +175,7 @@ int lucas(int n) {
   }
   return false;
 }
-
+// returns lucas number at position
 int lucas2(int n) {
   int a = 2, b = 1, c;
   if (n == 0) {
@@ -139,13 +191,19 @@ int lucas2(int n) {
   }
   return b;
 }
-
-int mer2(int n) { return pow(2, n) - 1; }
-
+// returns mersenne
+int mer2(int n) {
+  int power = 1;
+  for (int i = 0; i < n; i++) {
+    power *= 2;
+  }
+  return power - 1;
+}
+// mersenne function
 int mer(int n) {
   bool p = true;
   int check = 0;
-  for (int i = 0; i <= 20; i++) {
+  for (int i = 0; i <= 25; i++) {
     p = true;
     check = mer2(i);
     for (int i = 2; i < check; i++) {
@@ -159,21 +217,27 @@ int mer(int n) {
   }
   return false;
 }
-
-int *convert(int n, int base) {
-  int a = 0, b = 0, i = 0;
-  int answer = 0;
+// This function converts a number to required base
+char *convert(int n, int base, char array[]) {
+  int b = 0, i = 0;
+  char a;
   int check = n;
-  static int array[36];
-  char string[100];
-  char string2[100];
+  // PROFF DL
+  static char fourteen[] = "0123456789ABCD";             // base 14
+  static char twentythree[] = "0123456789ABCDEFGHIJKLM"; // base 23(M)
   while (check > 0) {
-    a = check % base;
-    array[i] = a;
+    a = check % base + '0'; // to store as a string
+    if (base == 14) {
+      array[i] = fourteen[check % 14];
+    } else if (base == 23) {
+      array[i] = twentythree[check % 23];
+    } else {
+      array[i] = a;
+    }
     b = check / base;
     check = b;
     i++;
   }
-  array[i] = '\0';
-  return array;
+  array[i] = '\0'; // Put NULL at end
+  return array;    // returns pointer to array
 }

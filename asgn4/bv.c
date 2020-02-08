@@ -12,9 +12,7 @@ BitVector *bv_create(uint32_t bit_len) {
 }
 
 void bv_delete(BitVector *v) {
-  for (int i = 0; i < sizeof(*v); i++) {
-    free(&v[i]);
-  }
+
   free(v);
   v = NULL;
 }
