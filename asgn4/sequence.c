@@ -129,20 +129,21 @@ int isPalindrome(char prime[]) {
 
 int fib(int n) {
   bool p;
-  int check = 0;
-  // goes into fib2 funciton to check return fib number
-  for (int i = 0; i <= 20; i++) {
+  int check = 0;  
+  int j=0; 	  
+  // continue while the returned fib number is less than the prime number input
+  while(check<=n) {
     p = true;
-    check = fib2(i);
-    // check prime
+    check = fib2(j); 
     for (int i = 2; i < check; i++) {
-      if (check % i == 0 && check != 2) {
+      if (check % i == 0) {  //checks if it is a prime number
         p = false;
       }
     }
-    if (n == check && p != false) {
+    if (n == check && p != false) { //if the prime number is equal to fib number
       return true;
     }
+    j++; //checks terms
   }
   return false;
 }
@@ -157,23 +158,25 @@ int fib2(int n) {
     a = b;
     b = c;
   }
-  return b;
+  return b;  //returns the fib number at term number
 }
 // checks lucas
 int lucas(int n) {
   bool p;
   int check = 0;
-  for (int i = 0; i <= 20; i++) {
+  int j=0;
+  while(check<=n) {	//continue if lucas number is smaller than our prime #
     p = true;
-    check = lucas2(i);
+    check = lucas2(j);
     for (int i = 2; i < check; i++) {
-      if (check % i == 0 && check != 2) {
+      if (check % i == 0) {
         p = false;
       }
     }
     if (n == check && p != false) {
       return true;
     }
+    j++;
   }
   return false;
 }
@@ -191,33 +194,36 @@ int lucas2(int n) {
     a = b;
     b = c;
   }
-  return b;
+  return b; //return lucas number at the term number
 }
 // returns mersenne
 int mer2(int n) {
   int number = n;
   number = 1 << n;
-  return number-1;
+  return number-1;	//returns mersenne number at the term
 }
 // mersenne function
 int mer(int n) {
   bool p;
   int check = 0;
-  for (int i = 0; i <= 20; i++) {
+  int j =0;
+  while(check<=n) {  //continue while mersenne number is smaller than prime #
     p = true;
-    check = mer2(i);
+    check = mer2(j);
     for (int i = 2; i < check; i++) {
-      if (check % i == 0 && check != 2) {
+      if (check % i == 0) {
         p = false;
       }
     }
     if (n == check && p != false) {
       return true;
     }
+    j++;
   }
   return false;
 }
 // This function converts a number to required base
+// PROF DL
 char *convert(int n, int base, char array[]) {
   int b = 0, i = 0;
   char a;
