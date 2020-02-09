@@ -15,7 +15,8 @@ int mer2();
 char *convert();
 
 int main(int argc, char *argv[]) {
-  int opt, num;
+  int opt;
+  int num = 0;
   bool head = true; // to print headers
   int letter = 0;
   char array[36]; // array pointer to base conversion
@@ -38,14 +39,15 @@ int main(int argc, char *argv[]) {
       exit(1);
     }
   }
-  BitVector *v = bv_create(num);
-  sieve(v);
   if (num < 0) {
+    printf("ERROR");
     exit(1);
   }
-  if (num == '\0') {
+  if (num == 0) {
     num = 1000;
   }
+  BitVector *v = bv_create(num);
+  sieve(v);
   if (letter == 's') {
     for (int j = 0; j <= num; j++) {
       if (bv_get_bit(v, j) == 1) {
@@ -126,10 +128,10 @@ int isPalindrome(char prime[]) {
 }
 
 int fib(int n) {
-  bool p = true;
+  bool p;
   int check = 0;
   // goes into fib2 funciton to check return fib number
-  for (int i = 0; i <= 25; i++) {
+  for (int i = 0; i <= 20; i++) {
     p = true;
     check = fib2(i);
     // check prime
@@ -159,9 +161,9 @@ int fib2(int n) {
 }
 // checks lucas
 int lucas(int n) {
-  bool p = true;
+  bool p;
   int check = 0;
-  for (int i = 0; i <= 25; i++) {
+  for (int i = 0; i <= 20; i++) {
     p = true;
     check = lucas2(i);
     for (int i = 2; i < check; i++) {
@@ -193,17 +195,15 @@ int lucas2(int n) {
 }
 // returns mersenne
 int mer2(int n) {
-  int power = 1;
-  for (int i = 0; i < n; i++) {
-    power *= 2;
-  }
-  return power - 1;
+  int number = n;
+  number = 1 << n;
+  return number-1;
 }
 // mersenne function
 int mer(int n) {
-  bool p = true;
+  bool p;
   int check = 0;
-  for (int i = 0; i <= 25; i++) {
+  for (int i = 0; i <= 20; i++) {
     p = true;
     check = mer2(i);
     for (int i = 2; i < check; i++) {
