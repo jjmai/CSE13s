@@ -10,3 +10,5 @@ typing make will build the program.
 typing make clean will clear out all unecessary items
 typing make infer will check for errors
 
+#ERROR
+make infer showed that there is a null dereference at BitVector v, it is caused by possible having a null array.
