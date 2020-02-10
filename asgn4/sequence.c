@@ -129,21 +129,22 @@ int isPalindrome(char prime[]) {
 
 int fib(int n) {
   bool p;
-  int check = 0;  
-  int j=0; 	  
+  int check = 0;
+  int j = 0;
   // continue while the returned fib number is less than the prime number input
-  while(check<=n) {
+  while (check <= n) {
     p = true;
-    check = fib2(j); 
+    check = fib2(j);
     for (int i = 2; i < check; i++) {
-      if (check % i == 0) {  //checks if it is a prime number
+      if (check % i == 0) { // checks if it is a prime number
         p = false;
       }
     }
-    if (n == check && p != false) { //if the prime number is equal to fib number
+    if (n == check && p != false) { // if the prime number is equal to fib
+                                    // number
       return true;
     }
-    j++; //checks terms
+    j++; // checks terms
   }
   return false;
 }
@@ -158,14 +159,14 @@ int fib2(int n) {
     a = b;
     b = c;
   }
-  return b;  //returns the fib number at term number
+  return b; // returns the fib number at term number
 }
 // checks lucas
 int lucas(int n) {
   bool p;
   int check = 0;
-  int j=0;
-  while(check<=n) {	//continue if lucas number is smaller than our prime #
+  int j = 0;
+  while (check <= n) { // continue if lucas number is smaller than our prime #
     p = true;
     check = lucas2(j);
     for (int i = 2; i < check; i++) {
@@ -194,20 +195,18 @@ int lucas2(int n) {
     a = b;
     b = c;
   }
-  return b; //return lucas number at the term number
+  return b; // return lucas number at the term number
 }
 // returns mersenne
 int mer2(int n) {
-  int number = n;
-  number = 1 << n;
-  return number-1;	//returns mersenne number at the term
+  return (1 << n) - 1; // returns mersenne number at the term
 }
 // mersenne function
 int mer(int n) {
   bool p;
   int check = 0;
-  int j =0;
-  while(check<=n) {  //continue while mersenne number is smaller than prime #
+  int j = 0;
+  while (check <= n) { // continue while mersenne number is smaller than prime #
     p = true;
     check = mer2(j);
     for (int i = 2; i < check; i++) {
