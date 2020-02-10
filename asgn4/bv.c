@@ -7,15 +7,14 @@ BitVector *bv_create(uint32_t bit_len) {
 
   BitVector *v = (BitVector *)malloc(sizeof(BitVector));
   v->length = bit_len;
-  //v->vector = (uint8_t *)malloc(v->length * sizeof(uint8_t));
+  // v->vector = (uint8_t *)malloc(v->length * sizeof(uint8_t));
   v->vector = (uint8_t *)calloc(v->length, sizeof(uint8_t));
   return v;
 }
 
 void bv_delete(BitVector *v) {
-
+  free(v->vector);
   free(v);
-  v = NULL;
 }
 
 uint32_t bv_get_len(BitVector *v) { return v->length; }

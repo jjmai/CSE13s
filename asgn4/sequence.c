@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   if (num == 0) {
-    num = 1000;
+    num = 1000; // default 1000
   }
   BitVector *v = bv_create(num);
   sieve(v);
