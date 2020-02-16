@@ -15,9 +15,9 @@ int *binary_sort(int ptr[], int length) {
       if (value >= ptr[mid]) {
         left = mid + 1;
       }
-      compare+=1;
+      compare += 1;
 
-      if(value<ptr[mid]){
+      if (value < ptr[mid]) {
         right = mid;
       }
     }

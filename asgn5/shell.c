@@ -21,7 +21,7 @@ int *shell_sort(int ptr[], int length) {
         compare += 1;
       }
     }
-    temp_length =x;
+    temp_length = x;
   }
   return 0;
 }

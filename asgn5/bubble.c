@@ -17,7 +17,6 @@ int *bubble_sort(int ptr[], int length) {
         ptr[j] = ptr[j - 1];
         ptr[j - 1] = swap;
         moves += 3;
-      
       }
       j -= 1;
       compare += 1;
