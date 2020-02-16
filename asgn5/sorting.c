@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
       bubble_sort(ptr, length);
       printing();
       for (int i = 0; i < prints && i < length; i++) {
-        printf("%10d\t",ptr[i]);
+        printf("%10d\t", ptr[i]);
       }
       if (letter[let_index] != 'A') {
         let_index++;
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     }
     if (letter[let_index] == 'q' || letter[let_index] == 'A') {
       printf("Quick Sort\n");
-      printf("%d Elements ",length);
+      printf("%d Elements ", length);
       srand(s_number);
       for (int i = 0; i < length; i++) {
         rando = rand() & MAX_NUM;
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
     }
     if (letter[let_index] == 'i' || letter[let_index] == 'A') {
       printf("Binary Insertion Sort\n");
-      printf("%d Elements ",length);
+      printf("%d Elements ", length);
       srand(s_number);
       for (int i = 0; i < length; i++) {
         rando = rand() & MAX_NUM;
@@ -141,9 +141,9 @@ int main(int argc, char *argv[]) {
         let_index++;
       }
       printf("\n\n");
-      if(letter[let_index] == 'A') {
-	let_index++;
-}
+      if (letter[let_index] == 'A') {
+        let_index++;
+      }
     }
   }
   free(ptr);
