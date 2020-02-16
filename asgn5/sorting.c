@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
       bubble_sort(ptr, length);
       printing();
       for (int i = 0; i < prints && i < length; i++) {
-        printf("\t%-10d",ptr[i]);
+        printf("%10d\t",ptr[i]);
       }
       if (letter[let_index] != 'A') {
         let_index++;
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
       shell_sort(ptr, length);
       printing();
       for (int i = 0; i < prints && i < length; i++) {
-        printf("\t%-10d", ptr[i]);
+        printf("%10d\t", ptr[i]);
       }
       if (letter[let_index] != 'A') {
         let_index++;
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
       quick_sort(ptr, length, 0, length - 1);
       printing();
       for (int i = 0; i < prints && i < length; i++) {
-        printf("\t%-10d", ptr[i]);
+        printf("%10d\t", ptr[i]);
       }
       if (letter[let_index] != 'A') {
         let_index++;
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
       binary_sort(ptr, length);
       printing();
       for (int i = 0; i < prints && i < length; i++) {
-        printf("\t%-10d", ptr[i]);
+        printf("%10d\t", ptr[i]);
       }
       if (letter[let_index] != 'A') {
         let_index++;
