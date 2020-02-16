@@ -7,12 +7,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MAX_NUM 1073741823
-#define srand_default 8222022
+#define MAX_NUM 1073741823    // 30 bit
+#define srand_default 8222022 // default srand
 
-extern int moves;
+extern int moves; // used for keeping track throughout files
 extern int compare;
-int printing();
+int printing(); // printing required headers
 
 int main(int argc, char *argv[]) {
   int opt;
@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 
   while ((opt = getopt(argc, argv, "Absqip:r:n:")) != -1) {
     switch (opt) {
+    // stores argv options into array
     case 'A':
       letter[index] = 'A';
       index++;
@@ -44,13 +45,13 @@ int main(int argc, char *argv[]) {
       index++;
       break;
     case 'p':
-      prints = atoi(optarg);
+      prints = atoi(optarg); // number to be printed
       break;
     case 'r':
-      s_number = atoi(optarg);
+      s_number = atoi(optarg); // number of srand
       break;
     case 'n':
-      length = atoi(optarg);
+      length = atoi(optarg); // number of array element and size
       break;
     default:
       exit(1);
@@ -70,6 +71,7 @@ int main(int argc, char *argv[]) {
 
   while (letter[let_index] != '\0') {
     int rando = 0;
+    // if first index of array is b or A then bubble sort
     if (letter[let_index] == 'b' || letter[let_index] == 'A') {
       printf("Bubble Sort\n");
       printf("%d elements ", length);
@@ -80,14 +82,16 @@ int main(int argc, char *argv[]) {
       }
       bubble_sort(ptr, length);
       printing();
+      // prints out sorted elements
       for (int i = 0; i < prints && i < length; i++) {
         printf("%10d\t", ptr[i]);
       }
-      if (letter[let_index] != 'A') {
-        let_index++;
+      if (letter[let_index] != 'A') { // only increment array if not A
+        let_index++;                  // need to preserve 'A'
       }
       printf("\n\n");
     }
+    // SHELL sort
     if (letter[let_index] == 's' || letter[let_index] == 'A') {
       printf("Shell Sort\n");
       printf("%d elements ", length);
@@ -106,6 +110,7 @@ int main(int argc, char *argv[]) {
       }
       printf("\n\n");
     }
+    // QUICK Sort
     if (letter[let_index] == 'q' || letter[let_index] == 'A') {
       printf("Quick Sort\n");
       printf("%d Elements ", length);
@@ -124,6 +129,7 @@ int main(int argc, char *argv[]) {
       }
       printf("\n\n");
     }
+    // Binary Sort
     if (letter[let_index] == 'i' || letter[let_index] == 'A') {
       printf("Binary Insertion Sort\n");
       printf("%d Elements ", length);
@@ -150,6 +156,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
+// Headers
 int printing() {
   printf("%d moves ", moves);
   printf("%d comparisons ", compare);

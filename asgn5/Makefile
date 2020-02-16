@@ -1,5 +1,6 @@
 CFLAGS = -Wpedantic -Werror -Wall -Wextra -std=c99 
 CC = clang $(CFLAGS)
+VFLAGS = --leak-check=full --show-leak-kinds=all -v
 
 all		:	sorting
 
@@ -13,4 +14,7 @@ clean		:
 		rm -rf sorting sorting.o bubble.o shell.o quick.o binary.o infer-out
 
 infer		:
-		make clean; infer-capture -- make; infer-analyze -- make		
+		make clean; infer-capture -- make; infer-analyze -- make
+
+valgrind	:
+		make clean; valgrind $(VFLAGS) -- make
