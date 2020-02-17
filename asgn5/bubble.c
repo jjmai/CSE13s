@@ -5,7 +5,7 @@
 
 int moves;
 int compare;
-
+//DL
 int *bubble_sort(int ptr[], int length) {
   int j = 0;
   int swap;

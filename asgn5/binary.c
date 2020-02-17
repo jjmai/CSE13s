@@ -3,7 +3,7 @@
 
 int moves;
 int compare;
-
+//DL
 int *binary_sort(int ptr[], int length) {
   for (int i = 1; i < length; i++) {
     int value = ptr[i];

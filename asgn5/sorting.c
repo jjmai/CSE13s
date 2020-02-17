@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MAX_NUM 1073741823    // 30 bit
+#define MAX_NUM (1 << 30) -1    // 30 bit
 #define srand_default 8222022 // default srand
 
 extern int moves; // used for keeping track throughout files

@@ -3,7 +3,7 @@
 int gap();
 int moves;
 int compare;
-
+//DL
 int *shell_sort(int ptr[], int length) {
   int x = 0;
   int swap = 0;

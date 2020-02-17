@@ -1,7 +1,7 @@
 #include "quick.h"
 #include <stdbool.h>
 #include <stdio.h>
-
+//DL
 int partition();
 int moves;
 int compare;
