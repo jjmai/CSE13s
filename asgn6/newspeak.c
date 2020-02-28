@@ -17,8 +17,11 @@ bool move_to_front;
 int main(int argc, char *argv[]) {
   int opt;
   int letter = 0;
-  //char words[256];
-  //char ch[256];
+  char *word;
+  char *word2;
+  char words[256];
+  int j_index = 0;
+  // char ch[256];
   int hash_size = HASH_DEFAULT;
   int bloom_size = THIRTY_BIT;
   bool check = true;
@@ -27,7 +30,7 @@ int main(int argc, char *argv[]) {
   char *filename = "test.txt";
   char *filename2 = "test2.txt";
   badfile = fopen(filename, "r");
-  goodfile = fopen(filename2,"r");
+  goodfile = fopen(filename2, "r");
   regex_t regex;
   regcomp(&regex, REGEX, REG_EXTENDED);
 
@@ -60,16 +63,28 @@ int main(int argc, char *argv[]) {
   }
   BloomFilter *bf = bf_create(bloom_size);
   HashTable *ht = ht_create(hash_size);
-  //while(scanf("%s",words)!=EOF) {
-    //printf("%s\n",words);
-  //}
-  char *temp;
-  while ((temp=next_word(badfile, &regex)) != NULL) {
-    bf_insert(bf,temp);
-    GoodSpeak *gs=gs_create(temp,NULL);
-    ht_insert(ht,gs);
+  char *joycamp[hash_size];
+
+  while ((word = next_word(badfile, &regex)) != NULL) {
+    bf_insert(bf, word);
+    GoodSpeak *gs = gs_create(word, NULL);
+    ht_insert(ht, gs);
   }
-  
+  while ((word = next_word(goodfile, &regex)) &&
+         (word2 = next_word(goodfile, &regex)) != NULL) {
+    bf_insert(bf, word);
+    GoodSpeak *gs = gs_create(word, word2);
+    ht_insert(ht, gs);
+  }
+  while (scanf("%s", words) != EOF) {
+    if (bf_probe(bf, words) == true) {
+      if (ht_lookup(ht, words) != NIL &&
+          ht_lookup(ht, words)->gs->newspeak == NIL) {
+        joycamp[j_index] = words;
+        j_index += 1;
+      }
+    }
+  }
 
   return 0;
 }
