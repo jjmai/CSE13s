@@ -17,6 +17,16 @@ bool move_to_front;
 int main(int argc, char *argv[]) {
   int opt;
   int letter = 0;
+  char joycamp_letter[512] =
+      "Dear Comrade,\n\nYou have chosen to use degenerate words that may cause "
+      "hurt feelings or cause comrades to think unpleasant thought. This is "
+      "doubleplus bad. To correct your wrongthink and preserve community "
+      "consensus we will be sending you to joycamp administered by Miniluv.\n\n"
+      "Your errors:\n\n";
+  char translation_letter[512] =
+      "Dear Comarde,\n\nSubmitting your text helps to preserve feelings and "
+      "prevent badthink. Some of the words that you used are not goodspeak. "
+      "The list shows how to turn the oldspeak words into newspeak.\n\n";
   char *word;
   char *word2;
   char words[256];
@@ -82,7 +92,7 @@ int main(int argc, char *argv[]) {
     if (bf_probe(bf, words) == true) {
       if (ht_lookup(ht, words) != NIL &&
           ht_lookup(ht, words)->gs->newspeak == NIL) {
-        joycamp[j_index] = ht_lookup(ht,words)->gs->oldspeak;
+        joycamp[j_index] = ht_lookup(ht, words)->gs->oldspeak;
         j_index += 1;
       } else if (ht_lookup(ht, words) != NIL &&
                  ht_lookup(ht, words)->gs->newspeak != NIL) {
@@ -92,13 +102,30 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  for (int i=0;i<j_index;i++) {
-    printf("%s\n", joycamp[i]);
-}
-//  for (int i =0 ;i<t_index;i++) {
-  //  printf("%s -> ",translation_old[i]);
-    //printf("%s\n",translation_new[i]);
-//}
+  if (letter != 's') {
+    if (j_index > 0 && t_index <=0) {
+      printf("%s", joycamp_letter);
+      for (int i = 0; i < j_index; i++) {
+        printf("%s\n", joycamp[i]);
+      }
+    } else if (t_index > 0 && j_index <= 0) {
+      printf("%s", translation_letter);
+      for (int i = 0; i < t_index; i++) {
+        printf("%s -> ", translation_old[i]);
+        printf("%s\n", translation_new[i]);
+      }
+    } else if (t_index > 0 && j_index > 0) {
+      printf("%s", joycamp_letter);
+      for (int i = 0; i < j_index; i++) {
+        printf("%s\n", joycamp[i]);
+      }
+      printf("\n\nThink of these words on your vacation!\n\n");
+      for (int i = 0; i < t_index; i++) {
+        printf("%s -> ", translation_old[i]);
+        printf("%s\n", translation_new[i]);
+      }
+    }
+  }
 
   return 0;
 }
