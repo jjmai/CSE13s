@@ -12,11 +12,17 @@
 #define REGEX "[a-zA-Z-]+"
 #define THIRTY_BIT (1 << 30) - 1
 #define HASH_DEFAULT 10000
+
 bool move_to_front;
+float bload;
+float hload;
 
 int main(int argc, char *argv[]) {
+  //FILE *fp=stdin;
   int opt;
   int letter = 0;
+  bload=0;
+  hload=0;
   char joycamp_letter[512] =
       "Dear Comrade,\n\nYou have chosen to use degenerate words that may cause "
       "hurt feelings or cause comrades to think unpleasant thought. This is "
@@ -37,8 +43,8 @@ int main(int argc, char *argv[]) {
   bool check = true;
   FILE *badfile;
   FILE *goodfile;
-  char *filename = "test.txt";
-  char *filename2 = "test2.txt";
+  char *filename = "oldspeak.txt";
+  char *filename2 = "newspeak.txt";
   badfile = fopen(filename, "r");
   goodfile = fopen(filename2, "r");
   regex_t regex;
@@ -103,7 +109,7 @@ int main(int argc, char *argv[]) {
     }
   }
   if (letter != 's') {
-    if (j_index > 0 && t_index <=0) {
+    if (j_index > 0 && t_index <= 0) {
       printf("%s", joycamp_letter);
       for (int i = 0; i < j_index; i++) {
         printf("%s\n", joycamp[i]);
@@ -126,6 +132,8 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  bf_count(bf);
+  printf("%f",bload);
 
   return 0;
 }
