@@ -5,7 +5,7 @@
 
 ListNode *ll_node_create(GoodSpeak *gs) {
   ListNode *n = (ListNode *)malloc(sizeof(ListNode));
-  n->gs=gs;
+  n->gs = gs;
   n->next = NIL;
 
   return n;
@@ -33,9 +33,7 @@ void ll_delete(ListNode *head) {
   }
 }
 
-GoodSpeak *ll_node_gs(ListNode *n) {
-	return n->gs;
-}
+GoodSpeak *ll_node_gs(ListNode *n) { return n->gs; }
 
 ListNode *ll_insert(ListNode **head, GoodSpeak *gs) {
   ListNode *l = ll_node_create(gs);
@@ -61,11 +59,11 @@ ListNode *ll_lookup(ListNode **head, char *key) {
       ListNode *previous = NULL;
       while (current != NIL) {
         if (strcmp(current->gs->oldspeak, key) == 0) {
-	  if(previous !=NIL) {
+          if (previous != NIL) {
             previous->next = current->next;
             current->next = *head;
             *head = current;
-    	  }
+          }
           return *head;
         }
         previous = current;
