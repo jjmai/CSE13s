@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   char *word2;
   char words[256];
   int j_index = 0;
-  // char ch[256];
+  int t_index = 0;
   int hash_size = HASH_DEFAULT;
   int bloom_size = THIRTY_BIT;
   bool check = true;
@@ -64,6 +64,8 @@ int main(int argc, char *argv[]) {
   BloomFilter *bf = bf_create(bloom_size);
   HashTable *ht = ht_create(hash_size);
   char *joycamp[hash_size];
+  char *translation_old[hash_size];
+  char *translation_new[hash_size];
 
   while ((word = next_word(badfile, &regex)) != NULL) {
     bf_insert(bf, word);
@@ -80,11 +82,23 @@ int main(int argc, char *argv[]) {
     if (bf_probe(bf, words) == true) {
       if (ht_lookup(ht, words) != NIL &&
           ht_lookup(ht, words)->gs->newspeak == NIL) {
-        joycamp[j_index] = words;
+        joycamp[j_index] = ht_lookup(ht,words)->gs->oldspeak;
         j_index += 1;
+      } else if (ht_lookup(ht, words) != NIL &&
+                 ht_lookup(ht, words)->gs->newspeak != NIL) {
+        translation_old[t_index] = ht_lookup(ht, words)->gs->oldspeak;
+        translation_new[t_index] = ht_lookup(ht, words)->gs->newspeak;
+        t_index += 1;
       }
     }
   }
+  for (int i=0;i<j_index;i++) {
+    printf("%s\n", joycamp[i]);
+}
+//  for (int i =0 ;i<t_index;i++) {
+  //  printf("%s -> ",translation_old[i]);
+    //printf("%s\n",translation_new[i]);
+//}
 
   return 0;
 }
