@@ -9,7 +9,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define REGEX "[a-zA-Z-]+"
+#define REGEX "[a-zA-Z'-]+"
 #define THIRTY_BIT (1 << 30) - 1
 #define HASH_DEFAULT 10000
 
@@ -18,7 +18,7 @@ float bload;
 float hload;
 
 int main(int argc, char *argv[]) {
-  //FILE *fp=stdin;
+  FILE *fp=stdin;
   int opt;
   int letter = 0;
   bload=0;
@@ -35,7 +35,8 @@ int main(int argc, char *argv[]) {
       "The list shows how to turn the oldspeak words into newspeak.\n\n";
   char *word;
   char *word2;
-  char words[256];
+  //char *word3;
+  char *words;
   int j_index = 0;
   int t_index = 0;
   int hash_size = HASH_DEFAULT;
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
     GoodSpeak *gs = gs_create(word, word2);
     ht_insert(ht, gs);
   }
-  while (scanf("%s", words) != EOF) {
+  while ((words= next_word(fp, &regex)) != NULL) {
     if (bf_probe(bf, words) == true) {
       if (ht_lookup(ht, words) != NIL &&
           ht_lookup(ht, words)->gs->newspeak == NIL) {
@@ -132,8 +133,13 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  bf_count(bf);
-  printf("%f",bload);
+  if (letter =='s') {
+    float h=ht_count(ht);
+    h=100.00* (h/hash_size);
+    printf("%f %s\n",h,"%");
+    float b=100.00* (bload/bloom_size);
+    printf("%f %s\n",b,"%");
+}
 
   return 0;
 }
