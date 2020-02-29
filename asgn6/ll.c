@@ -36,11 +36,18 @@ void ll_delete(ListNode *head) {
 GoodSpeak *ll_node_gs(ListNode *n) { return n->gs; }
 
 ListNode *ll_insert(ListNode **head, GoodSpeak *gs) {
-  ListNode *l = ll_node_create(gs);
-  l->next = *head;
-  *head = l;
-  return *head;
+  if (ll_lookup(&*head, gs->oldspeak) == NIL) {
+    ListNode *l = ll_node_create(gs);
+    l->next = *head;
+    *head = l;
+    return *head;
+  } else {
+    ListNode *l = ll_lookup(&*head, gs->oldspeak);
+    l->gs = gs;
+    return *head;
+  }
 }
+
 ListNode *ll_lookup(ListNode **head, char *key) {
   if (move_to_front != true) {
     if (*head && key) {

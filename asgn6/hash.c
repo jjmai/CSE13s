@@ -1,9 +1,11 @@
 #include "hash.h"
 #include "ll.h"
-#include "speck1.h"
+#include "speck.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+extern float hload;
 
 HashTable *ht_create(uint32_t length) {
   HashTable *ht = (HashTable *)malloc(sizeof(HashTable));
@@ -45,10 +47,19 @@ void ht_insert(HashTable *ht, GoodSpeak *gs) {
 
 void ht_print(HashTable *h) {
   if (h) {
-    for (int i = 0; i < h->length; i++) {
+    for (uint32_t i = 0; i < h->length; i++) {
       if (h->heads[i] != NIL) {
-        printf("%s %s",h->heads[i]->gs->oldspeak,h->heads[i]->gs->newspeak);
+        printf("%s %s\n", h->heads[i]->gs->oldspeak, h->heads[i]->gs->newspeak);
       }
     }
   }
+}
+
+uint32_t ht_count(HashTable *h) {
+    for(uint32_t i=0;i<h->length;i++) {
+        if(h->heads[i]!=NIL) {
+            hload+=1;
+        }
+    }
+    return hload;
 }
