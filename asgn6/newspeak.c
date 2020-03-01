@@ -16,13 +16,17 @@
 bool move_to_front;
 float bload;
 float hload;
+int looks;
+float links;
 
 int main(int argc, char *argv[]) {
-  FILE *fp=stdin;
+  FILE *fp = stdin;
   int opt;
   int letter = 0;
-  bload=0;
-  hload=0;
+  bload = 0;
+  hload = 0;
+  looks = 0;
+  links = 0;
   char joycamp_letter[512] =
       "Dear Comrade,\n\nYou have chosen to use degenerate words that may cause "
       "hurt feelings or cause comrades to think unpleasant thought. This is "
@@ -35,7 +39,7 @@ int main(int argc, char *argv[]) {
       "The list shows how to turn the oldspeak words into newspeak.\n\n";
   char *word;
   char *word2;
-  //char *word3;
+  // char *word3;
   char *words;
   int j_index = 0;
   int t_index = 0;
@@ -49,7 +53,7 @@ int main(int argc, char *argv[]) {
   badfile = fopen(filename, "r");
   goodfile = fopen(filename2, "r");
   regex_t regex;
-  regcomp(&regex, REGEX, REG_EXTENDED);
+  regcomp(&regex, REGEX, REG_EXTENDED );
 
   while ((opt = getopt(argc, argv, "sh:f:mb")) != EOF) {
     switch (opt) {
@@ -95,7 +99,7 @@ int main(int argc, char *argv[]) {
     GoodSpeak *gs = gs_create(word, word2);
     ht_insert(ht, gs);
   }
-  while ((words= next_word(fp, &regex)) != NULL) {
+  while ((words = next_word(fp, &regex)) != NULL) {
     if (bf_probe(bf, words) == true) {
       if (ht_lookup(ht, words) != NIL &&
           ht_lookup(ht, words)->gs->newspeak == NIL) {
@@ -133,13 +137,14 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  if (letter =='s') {
-    float h=ht_count(ht);
-    h=100.00* (h/hash_size);
-    printf("%f %s\n",h,"%");
-    float b=100.00* (bload/bloom_size);
-    printf("%f %s\n",b,"%");
-}
+  if (letter == 's') {
+    printf("Seeks: %d\n",looks);
+    printf("Average Seek Legnth: %f\n",links/looks);
+    float bb = bf_count(bf);
+    printf("Bloom Filter Load: %f %s\n",bb,"%");
+    float hl = ht_count(ht);
+    printf("HashTable Load %f %s\n",hl,"%");
+}    
 
   return 0;
 }
