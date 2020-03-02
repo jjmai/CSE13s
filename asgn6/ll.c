@@ -3,7 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern int looks;
+extern double links;
+
+//Creates a new linked list node for goodspeak words and set next pointer NULL
 ListNode *ll_node_create(GoodSpeak *gs) {
+  links+=1;
   ListNode *n = (ListNode *)malloc(sizeof(ListNode));
   n->gs = gs;
   n->next = NIL;
@@ -11,6 +16,7 @@ ListNode *ll_node_create(GoodSpeak *gs) {
   return n;
 }
 
+//delete single node
 void ll_node_delete(ListNode *n) {
   if (n) {
     if (n->gs) {
@@ -20,6 +26,7 @@ void ll_node_delete(ListNode *n) {
   }
 }
 
+//deletes whole list
 void ll_delete(ListNode *head) {
   if (head) {
     ListNode *current = head;
@@ -35,20 +42,24 @@ void ll_delete(ListNode *head) {
 
 GoodSpeak *ll_node_gs(ListNode *n) { return n->gs; }
 
+//Inserts a new node to connect with head
 ListNode *ll_insert(ListNode **head, GoodSpeak *gs) {
+  //if word doesn't exist in any node, make new one else replace the data inside
   if (ll_lookup(&*head, gs->oldspeak) == NIL) {
     ListNode *l = ll_node_create(gs);
     l->next = *head;
     *head = l;
     return *head;
   } else {
-    ListNode *l = ll_lookup(&*head, gs->oldspeak);
-    l->gs = gs;
+    ll_lookup(&*head, gs->oldspeak)->gs = gs;
     return *head;
   }
 }
 
+//Searches for the word in the Nodes and returns head pointer if found
 ListNode *ll_lookup(ListNode **head, char *key) {
+  looks += 1;
+  //Default=don't move node to front
   if (move_to_front != true) {
     if (*head && key) {
       ListNode *current = *head;
@@ -60,10 +71,10 @@ ListNode *ll_lookup(ListNode **head, char *key) {
       }
     }
     return NIL;
-  } else if (move_to_front == true) {
-    if (*head && key) {
+  } else if (move_to_front == true) {	//if move_to_front, then search Nodes
+    if (*head && key) {			//will move to the front
       ListNode *current = *head;
-      ListNode *previous = NULL;
+      ListNode *previous = NIL;
       while (current != NIL) {
         if (strcmp(current->gs->oldspeak, key) == 0) {
           if (previous != NIL) {
@@ -81,6 +92,7 @@ ListNode *ll_lookup(ListNode **head, char *key) {
   return NIL;
 }
 
+//print node current
 void ll_node_print(ListNode *n) {
   while (n != NIL) {
     printf("%s", n->gs->oldspeak);
@@ -88,6 +100,7 @@ void ll_node_print(ListNode *n) {
   }
 }
 
+//print entire list
 void ll_print(ListNode *head) {
 
   if (head) {

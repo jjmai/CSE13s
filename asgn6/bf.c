@@ -1,8 +1,10 @@
 #include "bf.h"
-#include "speck1.h"
+#include "speck.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+extern double bload;
 
 BloomFilter *bf_create(uint32_t size) {
   BloomFilter *bf = (BloomFilter *)malloc(sizeof(BloomFilter));
@@ -20,20 +22,25 @@ BloomFilter *bf_create(uint32_t size) {
 }
 
 void bf_delete(BloomFilter *bf) {
-  free(bf);
-  bf = NULL;
+  free(bf->filter);
+  // free(bf);
 }
 
+//Inserts hashed words in the bitvector 
 void bf_insert(BloomFilter *bf, char *key) {
   uint32_t answer = 0;
   answer = hash(bf->primary, key) % bf_length(bf);
   bv_set_bit(bf->filter, answer);
+ 
   answer = hash(bf->secondary, key) % bf_length(bf);
   bv_set_bit(bf->filter, answer);
+  
   answer = hash(bf->tertiary, key) % bf_length(bf);
   bv_set_bit(bf->filter, answer);
+  
 }
 
+//checks if the word is in Bloom Filter
 bool bf_probe(BloomFilter *bf, char *key) {
   uint32_t check1 = 0, check2 = 0, check3 = 0;
   check1 = hash(bf->primary, key) % bf->filter->length;
@@ -46,7 +53,17 @@ bool bf_probe(BloomFilter *bf, char *key) {
   }
   return false;
 }
+// size of Bloom Filter
+uint32_t bf_length(BloomFilter *b) { return b->filter->length; }
 
-uint32_t bf_length(BloomFilter *b) {
-	return b->filter->length;
+// Returns the Bloom Filter Load
+uint32_t bf_count(BloomFilter *b) {
+  for (uint32_t i = 0; i < bf_length(b); i++) {
+    if (bv_get_bit(b->filter, i) == 1) {
+      bload += 1;
+    }
+  }
+  double bb = 100 * (bload / bf_length(b));
+
+  return bb;
 }

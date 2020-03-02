@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 extern float hload;
 
@@ -19,47 +20,63 @@ HashTable *ht_create(uint32_t length) {
 
   return (HashTable *)NIL;
 }
-
+//deletes Hash Table at every index
 void ht_delete(HashTable *ht) {
   ListNode *temp;
   for (uint32_t i = 0; i < ht->length; i++) {
-    while (ht->heads != NIL) {
-      temp = ht->heads[i] = NIL;
-      free(ht->heads[i]->gs);
-      free(ht->heads[i]);
-      ht->heads[i] = temp;
+    temp = ht->heads[i];
+    while (temp != NULL) {
+      // ll_delete(temp);
+      free(temp);
+      temp = temp->next;
     }
-    free(ht->heads[i]);
   }
-  free(ht->heads);
+  // free(ht);
 }
 
+//Searches the HashTable at the hashed index for the word that is needed
 ListNode *ht_lookup(HashTable *ht, char *key) {
   uint32_t h = hash(ht->salt, key) % ht->length;
-  ll_lookup(&ht->heads[h], key);
-  return ht->heads[h];
+  ListNode *temp = ht->heads[h];
+  //Calls ll_lookup to see if word exists in that pointer of head
+  while (temp != NIL) {
+    if (strcmp(ll_lookup(&temp, key)->gs->oldspeak, key) == 0) {
+      return temp;
+    }
+    temp = temp->next;
+  }
+  return NIL;
 }
+//Insert Linked Node at index
 void ht_insert(HashTable *ht, GoodSpeak *gs) {
 
   uint32_t h = hash(ht->salt, gs->oldspeak) % ht->length;
-  ht->heads[h] = ll_insert(&ht->heads[h], gs);
+  if (ht->heads[h] == NIL) {
+    ht->heads[h] = ll_node_create(gs); //if empty then just insert
+  } else {
+    ht->heads[h] = ll_insert(&ht->heads[h], gs); //if not empty,set pointer
+  }
 }
 
+//prints Hash table values
 void ht_print(HashTable *h) {
   if (h) {
     for (uint32_t i = 0; i < h->length; i++) {
-      if (h->heads[i] != NIL) {
-        printf("%s %s\n", h->heads[i]->gs->oldspeak, h->heads[i]->gs->newspeak);
+      for (ListNode *temp = h->heads[i]; temp != NULL; temp = temp->next) {
+        printf("%s %s ->", temp->gs->oldspeak, temp->gs->newspeak);
       }
+      printf("\n");
     }
   }
 }
 
 uint32_t ht_count(HashTable *h) {
-    for(uint32_t i=0;i<h->length;i++) {
-        if(h->heads[i]!=NIL) {
-            hload+=1;
-        }
+  for (uint32_t i = 0; i < h->length; i++) {
+    if (h->heads[i] != NULL) {
+      hload += 1;
     }
-    return hload;
+  }
+  // printf("%f %d",hload,h->length);
+  double hl = 100 * (hload / h->length);
+  return hl;
 }

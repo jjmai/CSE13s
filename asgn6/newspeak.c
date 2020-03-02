@@ -9,20 +9,21 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define REGEX "[a-zA-Z'-]+"
-#define THIRTY_BIT (1 << 30) - 1
-#define HASH_DEFAULT 10000
+#define REGEX "[a-zA-Z0-9'-_]+" // Regular Expresison
+#define TWENTY_BIT (1 << 20)    // Default size for BF
+#define HASH_DEFAULT 10000      // Default size for HT
 
 bool move_to_front;
-float bload;
-float hload;
+double bload;
+double hload;
 int looks;
-float links;
+double links;
 
 int main(int argc, char *argv[]) {
   FILE *fp = stdin;
   int opt;
   int letter = 0;
+  int maxword = 0; // to count number of words possible for array
   bload = 0;
   hload = 0;
   looks = 0;
@@ -41,10 +42,10 @@ int main(int argc, char *argv[]) {
   char *word2;
   // char *word3;
   char *words;
-  int j_index = 0;
-  int t_index = 0;
+  int j_index = 0; // index for fobidden word array
+  int t_index = 0; // index for translation words array
   int hash_size = HASH_DEFAULT;
-  int bloom_size = THIRTY_BIT;
+  int bloom_size = TWENTY_BIT;
   bool check = true;
   FILE *badfile;
   FILE *goodfile;
@@ -53,12 +54,12 @@ int main(int argc, char *argv[]) {
   badfile = fopen(filename, "r");
   goodfile = fopen(filename2, "r");
   regex_t regex;
-  regcomp(&regex, REGEX, REG_EXTENDED );
+  regcomp(&regex, REGEX, REG_EXTENDED);
 
   while ((opt = getopt(argc, argv, "sh:f:mb")) != EOF) {
     switch (opt) {
     case 's':
-      letter = 's';
+      letter = 's'; // notify that print statistic only
       break;
     case 'h':
       hash_size = atoi(optarg);
@@ -84,21 +85,25 @@ int main(int argc, char *argv[]) {
   }
   BloomFilter *bf = bf_create(bloom_size);
   HashTable *ht = ht_create(hash_size);
-  char *joycamp[hash_size];
-  char *translation_old[hash_size];
-  char *translation_new[hash_size];
-
+  // reads in forbidden word file .txt and stores in BF and HT
   while ((word = next_word(badfile, &regex)) != NULL) {
     bf_insert(bf, word);
     GoodSpeak *gs = gs_create(word, NULL);
     ht_insert(ht, gs);
+    maxword += 1;
   }
+  // Reads in translation words in .txt and stores in BF and HT
   while ((word = next_word(goodfile, &regex)) &&
          (word2 = next_word(goodfile, &regex)) != NULL) {
     bf_insert(bf, word);
     GoodSpeak *gs = gs_create(word, word2);
     ht_insert(ht, gs);
+    maxword += 1;
   }
+  char *joycamp[maxword + 1];         // store forbidden words used
+  char *translation_old[maxword + 1]; // store old translation word
+  char *translation_new[maxword + 1]; // stroe new translation word
+  // READS in stdin/file of words and store in appropraite array if exitst in HT
   while ((words = next_word(fp, &regex)) != NULL) {
     if (bf_probe(bf, words) == true) {
       if (ht_lookup(ht, words) != NIL &&
@@ -113,6 +118,7 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  // if -s flag not implemented, then print the Letter and words
   if (letter != 's') {
     if (j_index > 0 && t_index <= 0) {
       printf("%s", joycamp_letter);
@@ -137,14 +143,19 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  // prints Stats if -s flag
   if (letter == 's') {
-    printf("Seeks: %d\n",looks);
-    printf("Average Seek Legnth: %f\n",links/looks);
-    float bb = bf_count(bf);
-    printf("Bloom Filter Load: %f %s\n",bb,"%");
-    float hl = ht_count(ht);
-    printf("HashTable Load %f %s\n",hl,"%");
-}    
+    printf("Seeks: %d\n", looks);
+    printf("Average Seek Length: %f\n", links / looks);
+    double hl = ht_count(ht);
+    printf("HashTable Load %f %s\n", hl, "%");
+    double bb = bf_count(bf);
+    printf("Bloom Filter Load: %f %s\n", bb, "%");
+  }
+  bf_delete(bf);
+  ht_delete(ht);
+  fclose(badfile);
+  fclose(goodfile);
 
   return 0;
 }
