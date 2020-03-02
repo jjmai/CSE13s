@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
-//Creates a goodspeak struct for oldspeak and newspeak words
+
+// Creates a goodspeak struct for oldspeak and newspeak words
 GoodSpeak *gs_create(char *oldspeak, char *newspeak) {
   GoodSpeak *gs = (GoodSpeak *)malloc(sizeof(GoodSpeak));
   if (oldspeak != NULL) {
@@ -23,7 +23,7 @@ GoodSpeak *gs_create(char *oldspeak, char *newspeak) {
   }
   return gs;
 }
-//deletes goodspeak struct
+// deletes goodspeak struct
 void gs_delete(GoodSpeak *g) {
   free(g->oldspeak);
   free(g->newspeak);

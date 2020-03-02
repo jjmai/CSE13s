@@ -22,25 +22,25 @@ BloomFilter *bf_create(uint32_t size) {
 }
 
 void bf_delete(BloomFilter *bf) {
+  free(bf->filter->vector);
   free(bf->filter);
-  // free(bf);
+  free(bf);
 }
 
-//Inserts hashed words in the bitvector 
+// Inserts hashed words in the bitvector
 void bf_insert(BloomFilter *bf, char *key) {
   uint32_t answer = 0;
   answer = hash(bf->primary, key) % bf_length(bf);
   bv_set_bit(bf->filter, answer);
- 
+
   answer = hash(bf->secondary, key) % bf_length(bf);
   bv_set_bit(bf->filter, answer);
-  
+
   answer = hash(bf->tertiary, key) % bf_length(bf);
   bv_set_bit(bf->filter, answer);
-  
 }
 
-//checks if the word is in Bloom Filter
+// checks if the word is in Bloom Filter
 bool bf_probe(BloomFilter *bf, char *key) {
   uint32_t check1 = 0, check2 = 0, check3 = 0;
   check1 = hash(bf->primary, key) % bf->filter->length;

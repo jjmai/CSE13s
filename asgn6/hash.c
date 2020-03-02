@@ -20,52 +20,48 @@ HashTable *ht_create(uint32_t length) {
 
   return (HashTable *)NIL;
 }
-//deletes Hash Table at every index
+// deletes Hash Table at every index
 void ht_delete(HashTable *ht) {
-  ListNode *temp;
+
+  // ListNode *temp;
   for (uint32_t i = 0; i < ht->length; i++) {
-    temp = ht->heads[i];
-    while (temp != NULL) {
-      // ll_delete(temp);
-      free(temp);
-      temp = temp->next;
+    if (ht->heads[i] != NIL) {
+      free(ht->heads[i]);
     }
   }
-  // free(ht);
+  free(ht->heads);
+  free(ht);
 }
 
-//Searches the HashTable at the hashed index for the word that is needed
+// Searches the HashTable at the hashed index for the word that is needed
 ListNode *ht_lookup(HashTable *ht, char *key) {
+
   uint32_t h = hash(ht->salt, key) % ht->length;
-  ListNode *temp = ht->heads[h];
-  //Calls ll_lookup to see if word exists in that pointer of head
-  while (temp != NIL) {
-    if (strcmp(ll_lookup(&temp, key)->gs->oldspeak, key) == 0) {
-      return temp;
+  // Calls ll_lookup to see if word exists in that pointer of head
+  for (ListNode *temp2 = ht->heads[h]; temp2 != NIL; temp2 = temp2->next) {
+    if (strcmp(ll_lookup(&temp2, key)->gs->oldspeak, key) == 0) {
+      return ll_lookup(&temp2, key);
     }
-    temp = temp->next;
   }
   return NIL;
 }
-//Insert Linked Node at index
+// Insert Linked Node at index
 void ht_insert(HashTable *ht, GoodSpeak *gs) {
-
   uint32_t h = hash(ht->salt, gs->oldspeak) % ht->length;
   if (ht->heads[h] == NIL) {
-    ht->heads[h] = ll_node_create(gs); //if empty then just insert
+    ht->heads[h] = ll_node_create(gs); // if empty then just insert
   } else {
-    ht->heads[h] = ll_insert(&ht->heads[h], gs); //if not empty,set pointer
+    ht->heads[h] = ll_insert(&ht->heads[h], gs); // if not empty,set pointer
   }
 }
 
-//prints Hash table values
+// prints Hash table values
 void ht_print(HashTable *h) {
   if (h) {
     for (uint32_t i = 0; i < h->length; i++) {
       for (ListNode *temp = h->heads[i]; temp != NULL; temp = temp->next) {
-        printf("%s %s ->", temp->gs->oldspeak, temp->gs->newspeak);
+        printf("%d %s %s ->", i, temp->gs->oldspeak, temp->gs->newspeak);
       }
-      printf("\n");
     }
   }
 }
