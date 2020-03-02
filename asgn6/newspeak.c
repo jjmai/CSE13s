@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
       "The list shows how to turn the oldspeak words into newspeak.\n\n";
   char *word;
   char *word2;
-  // char *word3;
   char *words;
   int j_index = 0; // index for fobidden word array
   int t_index = 0; // index for translation words array
@@ -49,8 +48,8 @@ int main(int argc, char *argv[]) {
   bool check = true;
   FILE *badfile;
   FILE *goodfile;
-  char *filename = "oldspeak.txt";
-  char *filename2 = "newspeak.txt";
+  char *filename = "badspeak.txt";
+  char *filename2 = "goodspeak.txt";
   badfile = fopen(filename, "r");
   goodfile = fopen(filename2, "r");
   regex_t regex;
@@ -103,6 +102,12 @@ int main(int argc, char *argv[]) {
   char *joycamp[maxword + 1];         // store forbidden words used
   char *translation_old[maxword + 1]; // store old translation word
   char *translation_new[maxword + 1]; // stroe new translation word
+  for (int i = 0; i < maxword + 1; i++) {
+    joycamp[i] = NULL;
+    translation_old[i] = NULL;
+    translation_new[i] = NULL;
+  }
+
   // READS in stdin/file of words and store in appropraite array if exitst in HT
   while ((words = next_word(fp, &regex)) != NULL) {
     if (bf_probe(bf, words) == true) {
@@ -153,9 +158,14 @@ int main(int argc, char *argv[]) {
     printf("Bloom Filter Load: %f %s\n", bb, "%");
   }
   bf_delete(bf);
+  for (uint32_t i = 0; i < ht->length; i++) {
+    if (ht->heads[i] != NULL) {
+      ll_delete(ht->heads[i]);
+    }
+  }
   ht_delete(ht);
   fclose(badfile);
   fclose(goodfile);
-
+  regfree(&regex);
   return 0;
 }
