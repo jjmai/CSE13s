@@ -18,18 +18,19 @@ ListNode *ll_node_create(GoodSpeak *gs) {
 // delete single node
 void ll_node_delete(ListNode *n) {
   gs_delete(n->gs);
+  // free(n);
   n = NULL;
 }
 
 // deletes whole list
 void ll_delete(ListNode *head) {
   if (head) {
-    ListNode *current = head;
-    ListNode *next;
-    while (current != NIL) {
-      next = current->next;
-      ll_node_delete(current);
-      current = next;
+    ListNode *temp;
+    while (head != NIL) {
+      temp = head;
+      head = head->next;
+      ll_node_delete(temp);
+      // free(temp);
     }
   }
   head = NULL;
@@ -104,7 +105,12 @@ void ll_print(ListNode *head) {
   if (head) {
     ListNode *current = head;
     while (current != NIL) {
-      printf("%s %s", current->gs->oldspeak, current->gs->newspeak);
+      printf("%s ", current->gs->oldspeak);
+      if (current->gs->newspeak != NULL) {
+        printf("-> %s\n", current->gs->newspeak);
+      } else {
+        printf("\n");
+      }
       current = current->next;
     }
   }

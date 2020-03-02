@@ -26,7 +26,7 @@ void ht_delete(HashTable *ht) {
   // ListNode *temp;
   for (uint32_t i = 0; i < ht->length; i++) {
     if (ht->heads[i] != NIL) {
-      free(ht->heads[i]);
+      ll_delete(ht->heads[i]);
     }
   }
   free(ht->heads);
