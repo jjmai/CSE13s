@@ -9,6 +9,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define REGEX "[a-zA-Z0-9'-_]+" // Regular Expresison
 #define TWENTY_BIT (1 << 20)    // Default size for BF
 #define HASH_DEFAULT 10000      // Default size for HT
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
   int t_index = 0; // index for translation words array
   int hash_size = HASH_DEFAULT;
   int bloom_size = TWENTY_BIT;
-  bool check = true;
+  bool check = true; // checker for movetofront
   FILE *badfile;
   FILE *goodfile;
   char *filename = "badspeak.txt";
@@ -102,6 +103,7 @@ int main(int argc, char *argv[]) {
   char *joycamp[maxword + 1];         // store forbidden words used
   char *translation_old[maxword + 1]; // store old translation word
   char *translation_new[maxword + 1]; // stroe new translation word
+  //sets array will null
   for (int i = 0; i < maxword + 1; i++) {
     joycamp[i] = NULL;
     translation_old[i] = NULL;
