@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     case 'f':
       bloom_size = atoi(optarg);
       break;
-    case 'm':
+    case 'm':	//move to fornt
       if (check != false) {
         check = false;
         move_to_front = true;
