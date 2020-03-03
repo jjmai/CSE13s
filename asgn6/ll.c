@@ -18,8 +18,8 @@ ListNode *ll_node_create(GoodSpeak *gs) {
 // delete single node
 void ll_node_delete(ListNode *n) {
   gs_delete(n->gs);
-  // free(n);
-  n = NULL;
+  free(n);
+  // n = NULL;
 }
 
 // deletes whole list
@@ -33,7 +33,7 @@ void ll_delete(ListNode *head) {
       // free(temp);
     }
   }
-  head = NULL;
+  free(head);
 }
 
 GoodSpeak *ll_node_gs(ListNode *n) { return n->gs; }

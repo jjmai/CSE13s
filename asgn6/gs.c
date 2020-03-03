@@ -25,9 +25,12 @@ GoodSpeak *gs_create(char *oldspeak, char *newspeak) {
 }
 // deletes goodspeak struct
 void gs_delete(GoodSpeak *g) {
-  g->oldspeak = NULL;
-  g->newspeak = NULL;
+  // g->oldspeak = NULL;
+  // g->newspeak = NULL;
+  free(g->oldspeak);
+  free(g->newspeak);
   // free(g);
+
   g = NULL;
 }
 
