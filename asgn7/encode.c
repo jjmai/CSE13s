@@ -10,9 +10,16 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  FILE *fpin = stdin;
-  // FILE *fpout = stdin;
-  // char ch[256];
+  //FILE *fpin = stdin;
+  int infile;
+  int outfile;
+  if (argc < 2 ) {
+    infile=0;
+    outfile=0;
+    //infile = open("test.txt", O_RDONLY | O_CREAT);
+    //outfile = open("test2.txt", O_WRONLY | O_CREAT);
+}
+
   int opt;
   int letter = 0;
   while ((opt = getopt(argc, argv, "vio")) != EOF) {
@@ -21,9 +28,12 @@ int main(int argc, char *argv[]) {
       letter = 'v';
       break;
     case 'i':
-      fpin = fopen(optarg, "r");
+      infile = open(optarg, O_RDONLY | O_CREAT);
+
       break;
     case 'o':
+      outfile = open(optarg, O_WRONLY | O_CREAT);
+
       break;
     default:
       exit(1);
@@ -36,10 +46,8 @@ int main(int argc, char *argv[]) {
   uint8_t curr_sym = 0;
   uint8_t prev_sym = 0;
   uint16_t next_code = START_CODE;
-  int infile = open("test.txt", O_RDONLY | O_CREAT);
-  int outfile = open("test2.txt", O_WRONLY | O_CREAT);
-  // int a = write(outfile, "SUP\n",strlen("SUP\n"));
 
+  
   while (read_sym(infile, &curr_sym) == true) {
 
     TrieNode *next_node = trie_step(curr_node, curr_sym);
