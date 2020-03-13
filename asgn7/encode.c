@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
       next_code += 1;
     }
     if (next_code == MAX_CODE) {
-      trie_reset(root);
+      //trie_reset(root);
       root = NULL;
       root = trie_create();
       curr_node = root;
