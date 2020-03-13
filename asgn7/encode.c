@@ -14,7 +14,8 @@ int main(int argc, char *argv[]) {
   int outfile;
   if (argc < 2) {
     infile = 0;
-    outfile = 0;
+    outfile = 1;
+    
   }
 
   int opt;
@@ -38,6 +39,11 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  FileHeader *fh= (FileHeader *)malloc(sizeof(FileHeader));
+  fh->magic=MAGIC;
+  
+  write_header(outfile,fh);
+
   TrieNode *root = trie_create();
   TrieNode *curr_node = root;
   TrieNode *prev_node = NULL;
@@ -52,7 +58,7 @@ int main(int argc, char *argv[]) {
       prev_node = curr_node;
       curr_node = next_node;
     } else {
-      buffer_pair(outfile, curr_node->code, curr_sym,log2(next_code) + 1);
+      buffer_pair(outfile, curr_node->code, curr_sym, log2(next_code) + 1);
       curr_node->children[curr_sym] = trie_node_create(next_code);
       //printf("%d %c\n", curr_node->children[curr_sym]->code, curr_sym);
       curr_node = root;
@@ -60,6 +66,8 @@ int main(int argc, char *argv[]) {
     }
     if (next_code == MAX_CODE) {
       trie_reset(root);
+      root = NULL;
+      root = trie_create();
       curr_node = root;
       next_code = START_CODE;
     }
