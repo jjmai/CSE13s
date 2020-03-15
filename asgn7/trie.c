@@ -47,6 +47,7 @@ void trie_delete(TrieNode *n) {
   n = NULL;
 }
 
+//checks if there are childrens
 TrieNode *trie_step(TrieNode *n, uint8_t sym) {
   if (n->children[sym]) {
     return n->children[sym];

@@ -9,8 +9,8 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  int infile;  // to read pairs form that is compressed
-  int outfile; // output back to normal
+  int infile;  
+  int outfile; 
   infile=0;
   outfile=1;
 
@@ -32,24 +32,25 @@ int main(int argc, char *argv[]) {
       exit(1);
     }
   }
-  //FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
-  //read_header(infile, fh);
+  FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
+  read_header(infile, fh);
   
   WordTable *table = wt_create();
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
   uint16_t next_code = START_CODE;
-  //uint8_t test=98;
+ 
   while (read_pair(infile, &curr_code, &curr_sym, log2(next_code) + 1) ==
          true) {
-    //printf("%d %c \n",curr_code,curr_sym);
+    
     table[next_code] = word_append_sym(table[curr_code], curr_sym);
-    //printf("%s - ", table[next_code]->syms);
+    
     buffer_word(outfile, table[next_code]);
-    //test++;
+    
     next_code += 1;
     if (next_code == MAX_CODE) {
-      wt_reset(table);
+      //wt_reset(table);
+      table=wt_create();
       next_code = START_CODE;
     }
   }

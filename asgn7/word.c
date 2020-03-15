@@ -8,25 +8,22 @@ Word *word_create(uint8_t *syms, uint64_t len) {
   Word *ww = (Word *)malloc(sizeof(Word));
   ww->syms = calloc(len, sizeof(Word));
   ww->len=len;
-  //memcpy(ww->syms, &syms, ww->len);
-  //printf("%s !",ww->syms);
+  //copies syms over to newly created Word
   for(uint64_t i=0;i<ww->len;i++) {
     ww->syms[i]=syms[i];
   }
-  printf("%s ",ww->syms);  
   return ww;
 }
 
 Word *word_append_sym(Word *w, uint8_t sym) {
-  //printf("%c--\n",sym);
-  if (w == NULL) {    
+  //if table is empty, just create the word
+  if (w == NULL) { 
     Word *ww = word_create(&sym, sizeof(sym));
     ww->syms[ww->len-1]=sym;
     return ww;
   }
-  Word *ww = word_create(w->syms, w->len+1);
-  ww->syms[ww->len - 1] = sym;
-  // printf("%s !",ww->syms);
+  Word *ww = word_create(w->syms, w->len+1);  //create with one extra spot
+  ww->syms[ww->len - 1] = sym;    //places at last index of Word
   return ww;
 }
 

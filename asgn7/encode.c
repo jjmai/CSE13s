@@ -14,15 +14,14 @@
 int main(int argc, char *argv[]) {
   int infile;
   int outfile;
-  if (argc < 2) {
-    infile = 0;
-    outfile = 1;
-  }
+  infile = 0;
+  outfile = 1;
 
   int opt;
   int letter = 0;
   while ((opt = getopt(argc, argv, "vi:o:")) != EOF) {
     switch (opt) {
+    //print statistic
     case 'v':
       letter = 'v';
       break;
@@ -40,10 +39,8 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  //FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
-  // fh->magic = MAGIC;
-
-  //write_header(outfile, fh);
+  FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader)); 
+  write_header(outfile, fh);
 
   TrieNode *root = trie_create();
   TrieNode *curr_node = root;
@@ -61,7 +58,6 @@ int main(int argc, char *argv[]) {
     } else {
       buffer_pair(outfile, curr_node->code, curr_sym, log2(next_code) + 1);
       curr_node->children[curr_sym] = trie_node_create(next_code);
-      // printf("%d %c\n", curr_node->children[curr_sym]->code, curr_sym);
       curr_node = root;
       next_code += 1;
     }
@@ -72,7 +68,6 @@ int main(int argc, char *argv[]) {
       curr_node = root;
       next_code = START_CODE;
     }
-    // printf("%d",curr_node->children[curr_sym]->code);
     prev_sym = curr_sym;
   }
   if (curr_node != root) {
