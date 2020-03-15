@@ -11,10 +11,8 @@
 int main(int argc, char *argv[]) {
   int infile;  // to read pairs form that is compressed
   int outfile; // output back to normal
-  if (argc < 2) {
-    infile = 0;
-    outfile = 1;
-  }
+  infile=0;
+  outfile=1;
 
   int opt;
   int letter = 0;
@@ -24,9 +22,7 @@ int main(int argc, char *argv[]) {
       letter = 'v';
       break;
     case 'i':
-
       infile = open(optarg, O_RDONLY | O_CREAT);
-
       break;
     case 'o':
       outfile = open(optarg, O_WRONLY | O_CREAT | O_TRUNC);
@@ -38,9 +34,7 @@ int main(int argc, char *argv[]) {
   }
   //FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
   //read_header(infile, fh);
-
-  // char words;
-  // int num;
+  
   WordTable *table = wt_create();
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
@@ -50,7 +44,7 @@ int main(int argc, char *argv[]) {
          true) {
     //printf("%d %c \n",curr_code,curr_sym);
     table[next_code] = word_append_sym(table[curr_code], curr_sym);
-    //printf("%s? \n", table[next_code]->syms);
+    //printf("%s - ", table[next_code]->syms);
     buffer_word(outfile, table[next_code]);
     //test++;
     next_code += 1;
