@@ -9,10 +9,10 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  int infile;  
-  int outfile; 
-  infile=0;
-  outfile=1;
+  int infile;
+  int outfile;
+  infile = 0;
+  outfile = 1;
 
   int opt;
   int letter = 0;
@@ -34,23 +34,23 @@ int main(int argc, char *argv[]) {
   }
   FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
   read_header(infile, fh);
-  
+
   WordTable *table = wt_create();
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
   uint16_t next_code = START_CODE;
- 
+
   while (read_pair(infile, &curr_code, &curr_sym, log2(next_code) + 1) ==
          true) {
-    
+
     table[next_code] = word_append_sym(table[curr_code], curr_sym);
-    
+
     buffer_word(outfile, table[next_code]);
-    
+
     next_code += 1;
     if (next_code == MAX_CODE) {
-      //wt_reset(table);
-      table=wt_create();
+      // wt_reset(table);
+      table = wt_create();
       next_code = START_CODE;
     }
   }
