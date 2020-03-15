@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
       break;
     case 'o':
-      outfile = open(optarg, O_WRONLY | O_CREAT);
+      outfile = open(optarg, O_WRONLY | O_CREAT | O_TRUNC);
 
       break;
     default:
@@ -37,18 +37,22 @@ int main(int argc, char *argv[]) {
     }
   }
   //FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
- // read_header(infile , fh);
+  //read_header(infile, fh);
 
+  // char words;
+  // int num;
   WordTable *table = wt_create();
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
   uint16_t next_code = START_CODE;
+  //uint8_t test=98;
   while (read_pair(infile, &curr_code, &curr_sym, log2(next_code) + 1) ==
          true) {
-    // printf("%d %d ",curr_code,curr_sym);
+    //printf("%d %c \n",curr_code,curr_sym);
     table[next_code] = word_append_sym(table[curr_code], curr_sym);
+    //printf("%s? \n", table[next_code]->syms);
     buffer_word(outfile, table[next_code]);
-    // printf("%c ,%c ",curr_code , curr_sym);
+    //test++;
     next_code += 1;
     if (next_code == MAX_CODE) {
       wt_reset(table);
