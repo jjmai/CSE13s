@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -15,7 +17,6 @@ int main(int argc, char *argv[]) {
   if (argc < 2) {
     infile = 0;
     outfile = 1;
-    
   }
 
   int opt;
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
 
       break;
     case 'o':
-      outfile = open(optarg, O_WRONLY | O_CREAT);
+      outfile = open(optarg, O_WRONLY | O_CREAT | O_TRUNC);
 
       break;
     default:
@@ -39,10 +40,10 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  FileHeader *fh= (FileHeader *)malloc(sizeof(FileHeader));
-  fh->magic=MAGIC;
-  
-  write_header(outfile,fh);
+  //FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
+  // fh->magic = MAGIC;
+
+  //write_header(outfile, fh);
 
   TrieNode *root = trie_create();
   TrieNode *curr_node = root;
@@ -60,12 +61,12 @@ int main(int argc, char *argv[]) {
     } else {
       buffer_pair(outfile, curr_node->code, curr_sym, log2(next_code) + 1);
       curr_node->children[curr_sym] = trie_node_create(next_code);
-      //printf("%d %c\n", curr_node->children[curr_sym]->code, curr_sym);
+      // printf("%d %c\n", curr_node->children[curr_sym]->code, curr_sym);
       curr_node = root;
       next_code += 1;
     }
     if (next_code == MAX_CODE) {
-      //trie_reset(root);
+      // trie_reset(root);
       root = NULL;
       root = trie_create();
       curr_node = root;
@@ -80,5 +81,16 @@ int main(int argc, char *argv[]) {
   }
   buffer_pair(outfile, STOP_CODE, 0, log2(next_code) + 1);
   flush_pairs(outfile);
+
+  if (letter == 'v') {
+    printf("\n");
+    off_t fsize, fsize2;
+    fsize = lseek(infile, 0, SEEK_END);
+    fsize2 = lseek(outfile, 0, SEEK_END);
+    fprintf(stderr, "Compressed file size: %lu bytes\n", fsize);
+    fprintf(stderr, "Uncompressed file size: %lu bytes\n", fsize2);
+    fprintf(stderr, "Compression ratio: %lu%s\n", 100 * (1 - fsize / fsize2),
+            "%");
+  }
   return 0;
 }
