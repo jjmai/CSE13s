@@ -11,17 +11,18 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+extern double csize;
+extern double dsize;
+
 int main(int argc, char *argv[]) {
-  int infile;
-  int outfile;
-  infile = 0;
-  outfile = 1;
+  int infile = STDIN_FILENO;
+  int outfile = STDOUT_FILENO;
 
   int opt;
   int letter = 0;
   while ((opt = getopt(argc, argv, "vi:o:")) != EOF) {
     switch (opt) {
-    //print statistic
+    // print statistic
     case 'v':
       letter = 'v';
       break;
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader)); 
+  FileHeader *fh = (FileHeader *)malloc(sizeof(FileHeader));
   write_header(outfile, fh);
 
   TrieNode *root = trie_create();
@@ -79,13 +80,14 @@ int main(int argc, char *argv[]) {
 
   if (letter == 'v') {
     printf("\n");
-    off_t fsize, fsize2;
-    fsize = lseek(infile, 0, SEEK_END);
-    fsize2 = lseek(outfile, 0, SEEK_END);
-    fprintf(stderr, "Compressed file size: %lu bytes\n", fsize);
-    fprintf(stderr, "Uncompressed file size: %lu bytes\n", fsize2);
-    fprintf(stderr, "Compression ratio: %lu%s\n", 100 * (1 - fsize / fsize2),
-            "%");
+    fprintf(stderr, "Compressed file size: %f bytes\n", csize);
+    fprintf(stderr, "Uncompressed file size: %f bytes\n", dsize);
+    fprintf(stderr, "Compression ratio: %f%s\n",
+            100 * (1 - csize / dsize), "%");
   }
+  trie_reset(root);
+  free(fh);
+  close(infile);
+  close(outfile);
   return 0;
 }
