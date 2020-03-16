@@ -12,12 +12,12 @@
 #include <unistd.h>
 
 void clear_words();
-void buffer_check();
-bool buffer2_check();
 #define BLOCK 4096
+double csize;
+double dsize;
 
-static uint8_t word[BLOCK] = {0}; // array for storing encoded bits to be
-                                  // written
+static uint8_t word[BLOCK] = {0};    // array for storing encoded bits to be
+                                     // written
 static uint8_t buffer[BLOCK] = {0};  // array for reading in 4KB for encode
 static uint8_t buffer2[BLOCK] = {0}; // array for reading in 4kb  for decode
 static uint8_t bufferd[BLOCK] = {0}; // array for storeing symbol for decode
@@ -31,11 +31,13 @@ void read_header(int infile, FileHeader *header) {
   struct stat protection;
   fstat(infile, &protection);
   header->protection = protection.st_mode;
+
   read(infile, header, sizeof(FileHeader));
-  // if(read(infile,header,sizeof(FileHeader)) != sizeof(FileHeader)) {
-  // printf("bad magic number");
-  //  exit(1);
-  // }
+  if (header->magic != 0x8badbeef) {
+    printf("bad magic number");
+    exit(1);
+  }
+//  csize+=sizeof(FileHeader);
 }
 
 void write_header(int outfile, FileHeader *header) {
@@ -44,21 +46,20 @@ void write_header(int outfile, FileHeader *header) {
   fstat(outfile, &protection);
   header->protection = protection.st_mode;
   write(outfile, header, sizeof(FileHeader));
+ // dsize+=sizeof(FileHeader);
 }
 
 bool read_sym(int infile, uint8_t *sym) {
   // reads from infile
-  if (x == 0 || x > BLOCK) {
+  if (x == 0 || x > BLOCK || x == end) {
     int n = read(infile, buffer, BLOCK);
     end = n;
+    dsize += n;
     if (n == 0) {
       return false;
     }
   }
   // false if no bytes read
-  if (x == end) {
-    return false;
-  }
   *sym = buffer[x];
   x = (x + 1) % BLOCK;
   return true;
@@ -71,13 +72,16 @@ void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
   uint16_t temp = 0;
   // sets a 1 or 0 to word[] array
   for (uint16_t i = 0; i < bitlen; i++) {
+    if (bit_index == BLOCK * 8) {
+      flush_pairs(outfile);
+    }
     temp = (c & (1 << i));
     if (temp) {
-      buffer_check(outfile);
+      // buffer_check(outfile);
       word[bit_index / 8] |= 1 << (bit_index % 8);
       bit_index++;
     } else {
-      buffer_check(outfile);
+      // buffer_check(outfile);
       word[bit_index / 8] &= ~(1 << (bit_index % 8));
       bit_index++;
     }
@@ -88,13 +92,16 @@ void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
   uint8_t s_length = (int)log2(s) + 1; // check bits of current sym
   // set 1 or 0 to word array
   for (uint8_t i = 0; i < s_length; i++) {
+    if (bit_index == BLOCK * 8) {
+      flush_pairs(outfile);
+    }
     temp2 = (s & (1 << i));
     if (temp2) {
-      buffer_check(outfile);
+      // buffer_check(outfile);
       word[bit_index / 8] |= 1 << (bit_index % 8);
       bit_index++;
     } else {
-      buffer_check(outfile);
+      // buffer_check(outfile);
       word[bit_index / 8] &= ~(1 << (bit_index % 8));
 
       bit_index++;
@@ -102,15 +109,12 @@ void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
   }
   // bit shifts and place trailing 0
   for (uint8_t i = 0; i < 8 - s_length; i++) {
-    buffer_check(outfile);
+    // buffer_check(outfile);
+    if (bit_index == BLOCK * 8) {
+      flush_pairs(outfile);
+    }
     word[bit_index / 8] &= ~(1 << (bit_index % 8));
     bit_index++;
-  }
-  // checks if reach BLOCK
-  if (bit_index == BLOCK * 8) {
-    flush_pairs(outfile);
-    clear_words();
-    bit_index = 0;
   }
 }
 
@@ -118,6 +122,7 @@ void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
 void flush_pairs(int outfile) {
 
   write(outfile, word, bit_index);
+  csize+=bit_index/8;
   bit_index = 0;
 }
 
@@ -129,17 +134,25 @@ bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
     bit_index = 0;
     int n = read(infile, buffer2, BLOCK);
     end = n;
+    csize+=n;
     if (n == 0) {
       return false;
     }
   }
 
   uint16_t temp = 0;
-  uint32_t array[1] = {0}; // array to store bits of char
+  uint16_t array[1] = {0}; // array to store bits of char
   // puts 1 or 0 to array
   for (uint8_t i = 0; i < bitlen; i++) {
-    if (buffer2_check(infile) == false) {
-      return false;
+
+    if (bit_index == BLOCK * 8) {
+      bit_index = 0;
+      int n = read(infile, buffer2, BLOCK);
+      end = n;
+      csize+=n;
+      if (n == 0) {
+        return false;
+      }
     }
     temp = (buffer2[bit_index / 8] >> (bit_index % 8) & 1);
     if (temp == 1) {
@@ -155,8 +168,15 @@ bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
   uint8_t array2[1] = {0}; // array for sym
   // puts 1 or 0
   for (int i = 0; i < 8; i++) {
-    if (buffer2_check(infile) == false) {
-      return false;
+
+    if (bit_index == BLOCK * 8) {
+      bit_index = 0;
+      int n = read(infile, buffer2, BLOCK);
+      end = n;
+      csize+=1;
+      if (n == 0) {
+        return false;
+      }
     }
     temp2 = (buffer2[bit_index / 8] >> (bit_index % 8) & 1);
     if (temp2 == 1) {
@@ -170,6 +190,7 @@ bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
   *sym = array2[0];
   // if reaches end then break
   if (*code == STOP_CODE && *sym == 0) {
+    // printf("NICE");
     return false;
   }
 
@@ -178,10 +199,10 @@ bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
 
 // store each char at each index
 void buffer_word(int outfile, Word *w) {
-
+  
   if (d == BLOCK) {
     flush_words(outfile);
-    d = 0;
+    
   }
   for (uint64_t i = 0; i < w->len; i++) {
     bufferd[d] = w->syms[i];
@@ -190,26 +211,10 @@ void buffer_word(int outfile, Word *w) {
 }
 
 // write buffer out
-void flush_words(int outfile) { write(outfile, bufferd, d); }
-
-// checks if encoded bits buffer is full
-void buffer_check(int outfile) {
-  if (bit_index >= BLOCK * 8) {
-    flush_pairs(outfile);
-  }
-}
-
-// checks if decoded bits buffer is full
-bool buffer2_check(int infile) {
-  if (bit_index >= BLOCK * 8 || bit_index >= end * 8) {
-    int n = read(infile, buffer2, BLOCK);
-    end = n;
-    bit_index = 0;
-  }
-  if (end == 0) {
-    return false;
-  }
-  return true;
+void flush_words(int outfile) {
+  write(outfile, bufferd, d);
+  dsize+=d;
+  d=0;
 }
 
 // reset word array?
