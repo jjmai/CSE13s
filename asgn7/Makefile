@@ -25,4 +25,7 @@ io.o		:	io.c
 		$(CC) -c io.c
 
 clean		:	
-		rm -rf *.o encode decode
+		rm -rf *.o encode decode infer-out
+ 
+infer		:
+		make clean; infer-capture -- make; infer-analyze -- make
