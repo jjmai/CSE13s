@@ -15,8 +15,8 @@ extern double csize; // var for size of compress
 extern double dsize; // var for size of decompress
 
 int main(int argc, char *argv[]) {
-  int infile = STDIN_FILENO;
-  int outfile = STDOUT_FILENO;
+  int infile = STDIN_FILENO;	//stdin
+  int outfile = STDOUT_FILENO;	//stdin
 
   int opt;
   int letter = 0;

@@ -12,4 +12,4 @@ type make infer to check for errors
 
 #ERRORS
 
-My program indicates that there could possibly be a null dereferenced at a pointer, but I made sure that it wouldn't get to that point if it's NULL
+The error says thatI didn't close a file descriptor but I clearly closed it at the end of code.
