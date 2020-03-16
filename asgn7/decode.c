@@ -10,6 +10,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+extern double csize;
+extern double dsize;
+
 int main(int argc, char *argv[]) {
   int infile;
   int outfile;
@@ -59,14 +62,11 @@ int main(int argc, char *argv[]) {
   flush_words(outfile);
 
   if (letter == 'v') {
-    struct stat s;
-    struct stat ss;
-    fstat(infile, &s);
-    fstat(outfile, &ss);
-    fprintf(stderr, "Compressed file size: %lu bytes\n", ss.st_size);
-    fprintf(stderr, "Uncompressed file size: %lu bytes\n", s.st_size);
-    fprintf(stderr, "Compression ratio: %lu%s\n",
-            100 * (1 - ss.st_size / s.st_size), "%");
+    printf("\n");
+    fprintf(stderr, "Compressed file size: %f bytes\n", csize);
+    fprintf(stderr, "Uncompressed file size: %f bytes\n", dsize);
+    fprintf(stderr, "Compression ratio: %f%s\n",
+            100 * (1 - csize / dsize), "%");
   }
   wt_reset(table);
   free(table);
