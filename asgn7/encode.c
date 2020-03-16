@@ -11,8 +11,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-extern double csize;
-extern double dsize;
+extern double csize; // var for size of compress
+extern double dsize; // var for size of decompress
 
 int main(int argc, char *argv[]) {
   int infile = STDIN_FILENO;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
       next_code += 1;
     }
     if (next_code == MAX_CODE) {
-      // trie_reset(root);
+      trie_reset(root);
       root = NULL;
       root = trie_create();
       curr_node = root;
@@ -82,10 +82,11 @@ int main(int argc, char *argv[]) {
     printf("\n");
     fprintf(stderr, "Compressed file size: %f bytes\n", csize);
     fprintf(stderr, "Uncompressed file size: %f bytes\n", dsize);
-    fprintf(stderr, "Compression ratio: %f%s\n",
-            100 * (1 - csize / dsize), "%");
+    fprintf(stderr, "Compression ratio: %f%s\n", 100 * (1 - csize / dsize),
+            "%");
   }
   trie_reset(root);
+  free(root);
   free(fh);
   close(infile);
   close(outfile);

@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
   uint16_t next_code = START_CODE;
-  
+
   while (read_pair(infile, &curr_code, &curr_sym, log2(next_code) + 1) ==
          true) {
 
@@ -51,9 +51,9 @@ int main(int argc, char *argv[]) {
 
     next_code += 1;
     if (next_code == MAX_CODE) {
-       wt_reset(table);
-       table = wt_create();
-       next_code = START_CODE;
+      wt_reset(table);
+      table = wt_create();
+      next_code = START_CODE;
     }
   }
   flush_words(outfile);
@@ -69,6 +69,7 @@ int main(int argc, char *argv[]) {
             100 * (1 - ss.st_size / s.st_size), "%");
   }
   wt_reset(table);
+  free(table);
   free(fh);
   close(infile);
   close(outfile);
